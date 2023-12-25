@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "exercises-webapp": {
+    "exercises": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -20,7 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/exercises-webapp",
+            "outputPath": "dist/exercises",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -76,10 +76,10 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "exercises-webapp:build:production"
+              "browserTarget": "exercises:build:production"
             },
             "development": {
-              "browserTarget": "exercises-webapp:build:development"
+              "browserTarget": "exercises:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -87,7 +87,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "exercises-webapp:build"
+            "browserTarget": "exercises:build"
           }
         },
         "test": {
@@ -112,5 +112,5 @@
       }
     }
   },
-  "defaultProject": "exercises-webapp"
+  "defaultProject": "exercises"
 }
