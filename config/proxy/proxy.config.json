@@ -1,0 +1,8 @@
+{
+  "/auth/*": {
+    "target": "https://titdmiwdxglugezfserh.supabase.co",
+    "changeOrigin": true,
+    "secure": false,
+    "logLevel": "debug"
+  }
+}
