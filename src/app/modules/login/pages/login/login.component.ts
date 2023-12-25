@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../../services/authentication.service';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, FormBuilder, FormGroup } from '@angular/forms';
 import { LoginForm } from './models/login-form.type';
 
 @Component({
@@ -9,9 +9,9 @@ import { LoginForm } from './models/login-form.type';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  form = this.formBuilder.group<LoginForm>({
-    email: new FormControl(''),
-    password: new FormControl(''),
+  form = new FormGroup<LoginForm>({
+    email: new UntypedFormControl(''),
+    password: new UntypedFormControl(''),
   });
 
   constructor(private formBuilder: FormBuilder,
