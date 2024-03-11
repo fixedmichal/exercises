@@ -6,10 +6,14 @@
   </div>
 
   <div class="login-card__form-container">
-    <form class="login-card__form">
+    <form [formGroup]="form" class="login-card__form">
       <section class="login-card_form__inputs">
-        <input type="text" />
+        <input class="login-card_form__input" formControlName="email" type="email" />
+        
+        <input class="login-card_form__input" formControlName="password" type="password" />
+        
       </section>
+      <button class="login-card_form__button" (click)="onSubmit()">SUBMIT</button>
     </form>
   </div>
 </article>

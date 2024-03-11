@@ -1,28 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { AuthenticationService } from '../../services/authentication.service';
-import { UntypedFormControl, FormBuilder, FormGroup } from '@angular/forms';
 import { LoginForm } from './models/login-form.type';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+	selector: 'app-login',
+	templateUrl: './login.component.html',
+	styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  form = new FormGroup<LoginForm>({
-    email: new UntypedFormControl(''),
-    password: new UntypedFormControl(''),
-  });
+	form = new FormGroup<LoginForm>({
+		email: new FormControl('', { nonNullable: true }),
+		password: new FormControl('', { nonNullable: true }),
+	});
 
-  constructor(private formBuilder: FormBuilder,
-              private authenticationService: AuthenticationService) {}
+	constructor(private authenticationService: AuthenticationService, private router: Router) {}
 
-  ngOnInit(): void {
-    const userCredentials = {
-      email: 'michal.stuleblak93@gmail.com',
-      password: '.Qwer1234'
-    };
+	ngOnInit(): void {
+	}
 
-    this.authenticationService.login(userCredentials).subscribe();
-  }
+	onSubmit(): void {
+		const userCredentials = { email: this.form.controls.email.value, password: this.form.controls.password.value };
+    
+		this.authenticationService.login(userCredentials).subscribe();
+
+		console.log(this.form.controls.email.value);
+	}
 }

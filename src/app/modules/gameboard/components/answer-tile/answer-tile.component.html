@@ -1,0 +1,7 @@
+<button class="hiragana-container" 
+  [disabled]="isDisabled"
+  [ngClass]="{ 'tile--selected': isSelected, 'tile--answered-correctly': isAnsweredCorrectly, 'tile--answered-wrongly': isAnsweredWrongly }"
+  (click)="onClick()">
+  <img class="hiragana-image" [src]="imagePath" alt="">
+
+</button>
