@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "learnkana10672": {
+      "hosting": {
+        "exercises": [
+          "learnkana10672"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "learnkana10672"
+  }
+}

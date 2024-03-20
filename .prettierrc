@@ -1,0 +1,23 @@
+{
+  "printWidth": 120,
+  "singleQuote": true,
+  "useTabs": false,
+  "tabWidth": 2,
+  "semi": true,
+  "bracketSpacing": true,
+  "endOfLine": "lf",
+  "bracketSameLine": true,
+  "htmlWhitespaceSensitivity": "strict",
+  "importOrder": [
+    "^(@angular(.*)|rxjs(.*)|@ngx(.*)|@ngneat(.*)|@ng-bootstrap(.*)|ng-mocks(.*)|typedjson|@gigaset(.*)|@ngrx(.*)|pwacompat(.*)|ngx-(.*))$",
+    "^@(config(.*)|components(.*)|constraints(.*)|core(.*)|helpers(.*)|models(.*)|modules(.*)|pages(.*)|pipes(.*)|routes(.*)|services(.*)|store(.*)|utils(.*)|shared(.*)|wizard(.*))$",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+  "importOrderParserPlugins": [
+    "typescript",
+    "classProperties",
+    "[\"decorators-legacy\", { \"decoratorsBeforeExport\": true }]"
+  ]
+}

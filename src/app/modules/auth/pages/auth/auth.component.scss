@@ -1,0 +1,41 @@
+.container {
+  display: flex;
+  margin: 5rem auto;
+  flex-direction: column;
+}
+
+.auth-card-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-wrapper {
+  padding: 2rem 5rem 3rem 5rem;
+}
+
+// .form-switch-container {
+//   display: flex;
+//   justify-content: stretch;
+//   border: none;
+// }
+
+mat-button-toggle-group {
+  display: flex;
+  justify-content: center;
+  border: none;
+}
+
+.form-switch-button {
+  padding: 0 2rem;
+  color: black;
+}
+
+.auth-card-header {
+  margin: 0 auto;
+}
+
+.mat-button-toggle-checked {
+  background-color: #9c27b0;
+}

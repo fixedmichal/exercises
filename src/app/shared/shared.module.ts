@@ -1,21 +1,39 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthenticationClientService } from './services/clients/authentication-client.service';
 import { HttpClientModule } from '@angular/common/http';
-import { MatButtonModule } from '@angular/material/button'; 
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+
 @NgModule({
-	providers: [
-		AuthenticationClientService
-	],
-	declarations: [
-	],
-	imports: [
+  providers: [],
+  declarations: [],
+  imports: [
+    CommonModule,
+    HttpClientModule,
     MatButtonModule,
-		CommonModule,
-		HttpClientModule
-	],
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatCardModule,
+    MatButtonToggleModule,
+    MatSnackBarModule,
+    MatProgressBarModule,
+  ],
   exports: [
-    MatButtonModule
-  ]
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatIconModule,
+    MatCardModule,
+    MatSnackBarModule,
+    MatProgressBarModule,
+  ],
 })
-export class SharedModule { }
+export class SharedModule {}

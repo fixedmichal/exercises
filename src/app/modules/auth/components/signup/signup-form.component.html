@@ -1,0 +1,35 @@
+<form class="form-container" [formGroup]="signupForm">
+  <mat-form-field appearance="outline">
+    <mat-icon matPrefix>account_circle</mat-icon>
+    <mat-label>Enter your nick</mat-label>
+    <input matInput formControlName="displayName" required />
+    <ng-container *ngIf="false"></ng-container>
+    <mat-error>{{ getNickControlError() }}</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-icon matPrefix>account_circle</mat-icon>
+    <mat-label>Enter your email</mat-label>
+    <input matInput formControlName="email" required />
+    <ng-container *ngIf="false"></ng-container>
+    <mat-error>{{ getEmailControlError() }}</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-icon matPrefix>lock</mat-icon>
+    <mat-label>Enter your password</mat-label>
+    <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required />
+    <mat-error>{{ getEmailControlError() }}</mat-error>
+
+    <button
+      matSuffix
+      mat-icon-button
+      (click)="hidePassword = !hidePassword"
+      [attr.aria-label]="'hidePassword password'"
+      [attr.aria-pressed]="hidePassword">
+      <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <button mat-fab extended color="accent" class="submit-button" (click)="onCreateAccountClick()">Create Account</button>
+</form>

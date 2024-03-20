@@ -1,0 +1,27 @@
+<section class="container">
+  <div class="auth-card-container">
+    <mat-card class="mat-elevation-z12">
+      <mat-button-toggle-group
+        value="login"
+        class="form-switch-container"
+        name="formSwitch"
+        aria-label="Form Switch"
+        #formToggle="matButtonToggleGroup">
+        <mat-button-toggle color="warn" class="form-switch-button" value="login">Login</mat-button-toggle>
+        <mat-button-toggle class="form-switch-button" value="signup">Create Account</mat-button-toggle>
+      </mat-button-toggle-group>
+
+      <!-- <mat-card-header class="auth-card-header">
+          <mat-card-title>
+            <h1>{{ formToggle.value === 'login' ? 'Login' : 'Create Account' }}</h1>
+          </mat-card-title>
+        </mat-card-header> -->
+      <div class="form-wrapper">
+        <app-login-form *ngIf="formToggle.value === 'login'" (formSubmitted)="login($event)"></app-login-form>
+        <app-signup-form
+          *ngIf="formToggle.value === 'signup'"
+          (formSubmitted)="createAccount($event)"></app-signup-form>
+      </div>
+    </mat-card>
+  </div>
+</section>

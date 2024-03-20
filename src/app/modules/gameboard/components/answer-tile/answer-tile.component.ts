@@ -1,28 +1,18 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { AnswerTile } from '../four-tiles-one-answer-game/models/game-tile.interface';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-answer-tile',
   templateUrl: './answer-tile.component.html',
-  styleUrls: ['./answer-tile.component.scss']
+  styleUrls: ['./answer-tile.component.scss'],
 })
-export class AnswerTileComponent implements OnChanges{
-  @Input() imagePath: string;
-  @Input() answerValue: string;
+export class AnswerTileComponent {
   @Input() index: number;
-  @Input() isSelected = false;
-  @Input() isDisabled = false;
 
-  @Input() isAnsweredCorrectly: boolean | undefined;
-  @Input() isAnsweredWrongly: boolean | undefined;
-
+  @Input() answerTileConfig: AnswerTile;
   @Output() tileSelected = new EventEmitter<number>();
 
-  constructor(private cdr: ChangeDetectorRef) {}
-
-  ngOnChanges(changes: SimpleChanges): void {
-  }
-  
   onClick(): void {
     this.tileSelected.emit(this.index);
   }

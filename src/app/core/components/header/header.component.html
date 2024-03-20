@@ -1,8 +1,22 @@
-<ul class="header formatted-list">
-<li>
-  <img src="./../../../../assets/icons/statistics-icon.png" alt="">
-</li>
-<li>
-  <img src="./../../../../assets/icons/icons8-male-user-24.svg" alt="">
-</li>
-</ul>
+<header class="header">
+  <div><h2 class="app-logo">Learn Kana</h2></div>
+  <nav class="navigation-container">
+    <ul *ngIf="isUserLoggedIn$ | async" class="navigation-list formatted-list">
+      <li>
+        <img src="./../../../../assets/icons/statistics-icon.png" alt="" />
+      </li>
+      <li>
+        <img src="./../../../../assets/icons/icons8-male-user-24.svg" alt="" />
+      </li>
+      <li>
+        <button mat-raised-button class="auth-button" (click)="onLogoutClick()">Logout</button>
+      </li>
+    </ul>
+
+    <ul *ngIf="(isUserLoggedIn$ | async) === null" class="navigation-list formatted-list">
+      <li>
+        <button mat-raised-button color="accent" class="auth-button" (click)="onLoginClick()">Login</button>
+      </li>
+    </ul>
+  </nav>
+</header>

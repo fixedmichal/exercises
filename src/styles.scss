@@ -1,12 +1,18 @@
 @import './styles/common.scss';
 @import './styles/variables.scss';
+@import './styles/fonts.scss';
 
 * {
   box-sizing: border-box;
-  
+  margin: 0;
+  font-family: 'Josefin Sans', sans-serif;
 }
 
 html {
   font-size: 16px;
+}
 
+body {
+  font-family: 'Josefin Sans', sans-serif !important;
+  background-color: rgb(28, 28, 28);
 }

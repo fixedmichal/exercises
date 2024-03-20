@@ -1,7 +1,11 @@
-<button class="hiragana-container" 
-  [disabled]="isDisabled"
-  [ngClass]="{ 'tile--selected': isSelected, 'tile--answered-correctly': isAnsweredCorrectly, 'tile--answered-wrongly': isAnsweredWrongly }"
+<button
+  class="tile"
+  [disabled]="answerTileConfig.isDisabled"
+  [ngClass]="{
+    'tile--selected': answerTileConfig.isSelected,
+    'tile--colored-green': answerTileConfig.isColoredGreen,
+    'tile--colored-red': answerTileConfig.isColoredRed
+  }"
   (click)="onClick()">
-  <img class="hiragana-image" [src]="imagePath" alt="">
-
+  <img class="tile-image" [src]="answerTileConfig.imagePath" alt="" />
 </button>

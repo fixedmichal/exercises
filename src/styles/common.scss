@@ -4,30 +4,26 @@
   font-size: 4rem;
   color: white;
   font-weight: 600;
-
 }
 
 .game-buttons-container {
   display: flex;
   justify-content: space-between;
   width: 100%;
-  border: 2px solid red;
-  padding: 0  6.25rem 0 6.25rem;
   margin-top: 6.25rem;
 }
 
 .continue-button {
-  width: 12rem;
-  padding: 2rem !important;
+  width: 9rem;
+  padding: 2rem 1rem !important;
   transition: all 0.15s ease-in-out;
   font-size: 1.2rem;
-  
+  border-radius: 50%;
 
   &:active {
     transform: scale(0.95);
   }
 }
-
 
 .font-color-yelow {
   color: $beatiful-yellow;

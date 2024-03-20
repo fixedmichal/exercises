@@ -4,38 +4,43 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { LoginModule } from './modules/login/login.module';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { AuthModule } from './modules/auth/auth.module';
+import { HttpClientModule } from '@angular/common/http';
 import { HeaderComponent } from './core/components/header/header.component';
-import { DashboardComponent } from './modules/gameboard/dashboard.component';
-import { AuthenticationInterceptor } from './core/interceptors/auth.interceptor';
-import { GamesComponent } from './modules/gameboard/pages/game/games.component';
+import { DashboardComponent } from './modules/gameboard/components/dashboard/dashboard.component';
 import { AnswerTileComponent } from './modules/gameboard/components/answer-tile/answer-tile.component';
 import { SharedModule } from './shared/shared.module';
+import { GameContainerComponent } from './modules/gameboard/components/game-container/game-container.component';
+import { GameContentDirective } from './shared/directives/game-content.directive';
+import { WriteRomajiGameComponent } from './modules/gameboard/components/write-romaji-game/write-romaji-game.component';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { environment } from '../environments/environment';
+import { provideAuth, getAuth } from '@angular/fire/auth';
+import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+import { FourTilesOneAnswerGameComponent } from './modules/gameboard/components/four-tiles-one-answer-game/four-tils-one-answer-game.component';
 
 @NgModule({
-	declarations: [
-		AppComponent,
-		HeaderComponent,
-		DashboardComponent,
-    GamesComponent,
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    DashboardComponent,
     AnswerTileComponent,
-	],
-	imports: [
-		BrowserModule,
-		AppRoutingModule,
-		BrowserAnimationsModule,
-		LoginModule,
-    SharedModule
-	],
-	providers: [
-		HttpClientModule,
-		{
-			multi: true,
-			provide: HTTP_INTERCEPTORS,
-			useClass: AuthenticationInterceptor,
-		},
-	],
-	bootstrap: [AppComponent]
+    GameContainerComponent,
+    GameContentDirective,
+    WriteRomajiGameComponent,
+    FourTilesOneAnswerGameComponent,
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    AuthModule,
+    SharedModule,
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideAuth(() => getAuth()),
+    provideFirestore(() => getFirestore()),
+  ],
+  providers: [HttpClientModule],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

@@ -1,0 +1,9 @@
+<section class="some-container">
+  <mat-progress-bar
+    mode="determinate"
+    bufferValue
+    [value]="counter$ | async"
+    color="warn"
+    class="question-time-counter"></mat-progress-bar>
+  <ng-template appGameContent></ng-template>
+</section>
