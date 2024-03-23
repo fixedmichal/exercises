@@ -1,0 +1,15 @@
+@import './../../../../../styles/variables.scss';
+
+.question-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+}
+
+.word-container {
+  padding: 2rem 3rem;
+  border-radius: 5%;
+  background-color: $beatiful-yellow;
+}

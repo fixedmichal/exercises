@@ -1,29 +1,27 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, Input, OnInit } from '@angular/core';
-import { from, tap, timer, zip } from 'rxjs';
-import { GameService } from '../../services/game.service';
-import { GameData } from './models/game-data.type';
-import { AnswerTile } from './models/game-tile.interface';
-import { HiraganaSymbol } from '../../../../shared/constants/hiragana-list-final.constants';
+import { GameCreatorService } from '../../services/game-creator.service';
+import { FourTilesOneAnswerQuestionData } from '../../models/four-tiles-one-answer-question-data.type';
+import { AnswerTile } from './models/answer-tile.interface';
+import { HiraganaSyllable } from '../../../../shared/constants/hiragana-syllables.constants';
 
 @Component({
-  selector: 'app-four-tiles-one-answer-game',
-  templateUrl: './four-tiles-one-answer-game.component.html',
-  styleUrls: ['./four-tiles-one-answer-game.component.scss'],
+  selector: 'app-four-tiles-one-answer',
+  templateUrl: './four-tiles-one-answer.component.html',
+  styleUrls: ['./four-tiles-one-answer.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FourTilesOneAnswerGameComponent implements OnInit {
   audioUri: string;
 
-  // gameData: GameData;
   answerTiles: AnswerTile[];
-  correctAnswer: HiraganaSymbol;
+  correctAnswer: HiraganaSyllable;
   isAnsweredCorrectly: boolean;
   isAnsweredWrongly: boolean;
   isAnswerConfirmed = false;
 
-  @Input() gameData: GameData;
+  @Input() gameData: FourTilesOneAnswerQuestionData;
 
-  constructor(private cdr: ChangeDetectorRef, private gameService: GameService) {}
+  constructor(private cdr: ChangeDetectorRef, private gameService: GameCreatorService) {}
 
   @HostListener('document:keydown', ['$event'])
   onKeydownHandler(event: KeyboardEvent) {
@@ -47,15 +45,11 @@ export class FourTilesOneAnswerGameComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.gameData = this.gameService.prepareGameData();
-
     this.answerTiles = this.gameData.answerTiles;
     this.correctAnswer = this.gameData.correctAnswer;
   }
 
   onTileSelected(tileIndex: number): void {
-    // const container = this.gameContentDirective.viewContainerRef.createComponent(AnswerTileComponent);
-
     this.selectTileAndUnselectOtherTiles(tileIndex);
   }
 
@@ -80,6 +74,7 @@ export class FourTilesOneAnswerGameComponent implements OnInit {
     if (selectedTile) {
       const selectedTileIndex = this.answerTiles.indexOf(selectedTile);
 
+      // sets each element
       this.answerTiles = this.answerTiles.map((tileData) => ({
         ...tileData,
         isDisabled: true,

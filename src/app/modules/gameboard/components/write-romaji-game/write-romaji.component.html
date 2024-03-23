@@ -1,0 +1,15 @@
+<section class="question-container">
+  <h2 class="question-header">Enter romaji translation!</h2>
+
+  <div class="word-container">
+    <img *ngFor="let imageUrl of questionData.kanaImages" class="kana-image" [src]="imageUrl" alt="" />
+  </div>
+
+  <mat-form-field appearance="outline">
+    <!-- <mat-icon matPrefix>account_circle</mat-icon> -->
+    <mat-label>Answer</mat-label>
+    <input matInput [formControl]="answerControl" required />
+    <ng-container *ngIf="false"></ng-container>
+    <mat-error>{{ 'asd' }}</mat-error>
+  </mat-form-field></section
+>

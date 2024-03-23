@@ -1,23 +1,23 @@
 @import './variables.scss';
 
-.game-header {
+.question-header {
   font-size: 4rem;
   color: white;
   font-weight: 600;
 }
 
-.game-buttons-container {
+.question-buttons-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   width: 100%;
-  margin-top: 6.25rem;
+  // margin-top: 6.25rem;
 }
 
 .continue-button {
   width: 9rem;
   padding: 2rem 1rem !important;
   transition: all 0.15s ease-in-out;
-  font-size: 1.2rem;
+  font-size: 1rem;
   border-radius: 50%;
 
   &:active {

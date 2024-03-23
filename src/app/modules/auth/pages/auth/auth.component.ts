@@ -4,7 +4,7 @@ import { AuthenticationService } from '../../services/authentication.service';
 import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { EMPTY } from 'rxjs';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { NotificationService } from 'src/app/shared/services/storage/notification.service';
 
 @Component({
   selector: 'app-auth',
@@ -16,7 +16,7 @@ export class AuthComponent {
   constructor(
     private authenticationService: AuthenticationService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private notificationService: NotificationService
   ) {}
 
   createAccount(signupData: SignupData) {
@@ -29,7 +29,7 @@ export class AuthComponent {
         }),
         catchError((error) => {
           console.error(error);
-          this.snackBar.open('Error occurred when creating account! Please try again!');
+          this.notificationService.showErrorSnackbar('Error occurred when creating account! Please try again!');
 
           return EMPTY;
         })
@@ -46,7 +46,7 @@ export class AuthComponent {
         }),
         catchError((error) => {
           console.error(error);
-          this.snackBar.open('Error occurred when logging in! Please try again!');
+          this.notificationService.showErrorSnackbar('Error occurred when logging in! Please try again!');
 
           return EMPTY;
         })

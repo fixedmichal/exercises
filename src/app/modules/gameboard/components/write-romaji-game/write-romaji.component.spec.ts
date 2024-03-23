@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WriteRomajiGameComponent } from './write-romaji-game.component';
+import { WriteRomajiGameComponent } from './write-romaji.component';
 
 describe('WriteRomajiGameComponent', () => {
   let component: WriteRomajiGameComponent;
@@ -8,9 +8,8 @@ describe('WriteRomajiGameComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ WriteRomajiGameComponent ]
-    })
-    .compileComponents();
+      declarations: [WriteRomajiGameComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(WriteRomajiGameComponent);
     component = fixture.componentInstance;

@@ -10,14 +10,14 @@ import { HeaderComponent } from './core/components/header/header.component';
 import { DashboardComponent } from './modules/gameboard/components/dashboard/dashboard.component';
 import { AnswerTileComponent } from './modules/gameboard/components/answer-tile/answer-tile.component';
 import { SharedModule } from './shared/shared.module';
-import { GameContainerComponent } from './modules/gameboard/components/game-container/game-container.component';
-import { GameContentDirective } from './shared/directives/game-content.directive';
-import { WriteRomajiGameComponent } from './modules/gameboard/components/write-romaji-game/write-romaji-game.component';
+import { GameContainerComponent } from './modules/gameboard/components/game-container/question-container.component';
+import { QuestionContentDirective } from './shared/directives/game-content.directive';
+import { WriteRomajiGameComponent } from './modules/gameboard/components/write-romaji-game/write-romaji.component';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
-import { FourTilesOneAnswerGameComponent } from './modules/gameboard/components/four-tiles-one-answer-game/four-tils-one-answer-game.component';
+import { FourTilesOneAnswerGameComponent } from './modules/gameboard/components/four-tiles-one-answer-game/four-tiles-one-answer.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +26,7 @@ import { FourTilesOneAnswerGameComponent } from './modules/gameboard/components/
     DashboardComponent,
     AnswerTileComponent,
     GameContainerComponent,
-    GameContentDirective,
+    QuestionContentDirective,
     WriteRomajiGameComponent,
     FourTilesOneAnswerGameComponent,
   ],

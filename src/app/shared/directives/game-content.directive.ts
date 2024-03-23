@@ -1,8 +1,8 @@
 import { Directive, ViewContainerRef } from '@angular/core';
 
 @Directive({
-  selector: '[appGameContent]',
+  selector: '[appQuestionContent]',
 })
-export class GameContentDirective {
+export class QuestionContentDirective {
   constructor(public viewContainerRef: ViewContainerRef) {}
 }

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FourTilesOneAnswerGameComponent } from './four-tils-one-answer-game.component';
+import { FourTilesOneAnswerGameComponent } from './four-tiles-one-answer.component';
 
 describe('GameComponent', () => {
   let component: FourTilesOneAnswerGameComponent;

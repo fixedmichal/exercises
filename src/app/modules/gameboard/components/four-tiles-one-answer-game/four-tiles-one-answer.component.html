@@ -1,9 +1,9 @@
-<section *ngIf="answerTiles" class="game-container">
-  <h2 class="game-header"
+<section *ngIf="answerTiles" class="question-container">
+  <h2 class="question-header"
     >Which one is '<span class="font-color-yelow">{{ correctAnswer.romaji }}</span
     >' ?</h2
   >
-  <div class="hiraganas-container">
+  <div class="answers-container">
     <app-answer-tile
       *ngFor="let tile of answerTiles; let i = index"
       [answerTileConfig]="tile"
@@ -11,7 +11,7 @@
       (tileSelected)="onTileSelected($event)" />
   </div>
 
-  <div class="game-buttons-container">
+  <div class="question-buttons-container">
     <ng-container *ngIf="!isAnswerConfirmed; else answerConfirmed">
       <button mat-raised-button color="accent" class="continue-button" (click)="onContinueClick()">Continue</button>
     </ng-container>
