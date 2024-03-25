@@ -1,5 +1,4 @@
 export interface AnswerTile {
-  value: string;
   imagePath: string;
   isSelected: boolean;
   isDisabled: boolean;

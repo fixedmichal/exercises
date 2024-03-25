@@ -10,14 +10,15 @@ import { HeaderComponent } from './core/components/header/header.component';
 import { DashboardComponent } from './modules/gameboard/components/dashboard/dashboard.component';
 import { AnswerTileComponent } from './modules/gameboard/components/answer-tile/answer-tile.component';
 import { SharedModule } from './shared/shared.module';
-import { GameContainerComponent } from './modules/gameboard/components/game-container/question-container.component';
+import { QuizContainerComponent } from './modules/gameboard/components/quiz-container/quiz-container.component';
 import { QuestionContentDirective } from './shared/directives/game-content.directive';
-import { WriteRomajiGameComponent } from './modules/gameboard/components/write-romaji-game/write-romaji.component';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
-import { FourTilesOneAnswerGameComponent } from './modules/gameboard/components/four-tiles-one-answer-game/four-tiles-one-answer.component';
+import { FourTilesQuestionComponent } from './modules/gameboard/components/four-tiles-one-answer-game/four-tiles-question.component';
+import { WriteRomajiQuestionComponent } from './modules/gameboard/components/write-romaji-game/write-romaji-question.component';
+import { A11yModule } from '@angular/cdk/a11y';
 
 @NgModule({
   declarations: [
@@ -25,10 +26,10 @@ import { FourTilesOneAnswerGameComponent } from './modules/gameboard/components/
     HeaderComponent,
     DashboardComponent,
     AnswerTileComponent,
-    GameContainerComponent,
+    QuizContainerComponent,
     QuestionContentDirective,
-    WriteRomajiGameComponent,
-    FourTilesOneAnswerGameComponent,
+    WriteRomajiQuestionComponent,
+    FourTilesQuestionComponent,
   ],
   imports: [
     BrowserModule,
@@ -36,6 +37,7 @@ import { FourTilesOneAnswerGameComponent } from './modules/gameboard/components/
     BrowserAnimationsModule,
     AuthModule,
     SharedModule,
+    A11yModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),

@@ -11,7 +11,7 @@ export class DashboardComponent implements OnInit {
   constructor(private router: Router) {}
   ngOnInit(): void {}
 
-  goTolearnHiragana(): void {
+  goToLearnHiraganaPage(): void {
     this.router.navigate(['learn']);
   }
 }

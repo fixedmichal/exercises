@@ -8,7 +8,7 @@
   <mat-form-field appearance="outline">
     <!-- <mat-icon matPrefix>account_circle</mat-icon> -->
     <mat-label>Answer</mat-label>
-    <input matInput [formControl]="answerControl" required />
+    <input matInput [formControl]="answerControl" [cdkTrapFocusAutoCapture]="true" [cdkTrapFocus]="true" required />
     <ng-container *ngIf="false"></ng-container>
     <mat-error>{{ 'asd' }}</mat-error>
   </mat-form-field></section

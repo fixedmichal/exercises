@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WriteRomajiGameComponent } from './write-romaji.component';
+import { WriteRomajiQuestionComponent } from './write-romaji-question.component';
 
 describe('WriteRomajiGameComponent', () => {
-  let component: WriteRomajiGameComponent;
-  let fixture: ComponentFixture<WriteRomajiGameComponent>;
+  let component: WriteRomajiQuestionComponent;
+  let fixture: ComponentFixture<WriteRomajiQuestionComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [WriteRomajiGameComponent],
+      declarations: [WriteRomajiQuestionComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(WriteRomajiGameComponent);
+    fixture = TestBed.createComponent(WriteRomajiQuestionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

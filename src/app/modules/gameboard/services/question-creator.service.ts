@@ -1,53 +1,60 @@
+import { WriteRomajiQuestionComponent } from '../components/write-romaji-game/write-romaji-question.component';
 import { Injectable } from '@angular/core';
-import { HiraganaSyllable, hiraganaSyllables } from '../../../shared/constants/hiragana-syllables.constants';
+import { hiraganaSyllables } from '../../../shared/constants/hiragana-syllables.constants';
 import { Builder } from 'builder-pattern';
-import { Observable, Subject, map, startWith } from 'rxjs';
-import { FourTilesOneAnswerQuestionData } from '../models/four-tiles-one-answer-question-data.type';
+import { FourTilesQuestionData } from '../models/four-tiles-question-data.type';
 import { AnswerTile } from '../components/four-tiles-one-answer-game/models/answer-tile.interface';
 import { hiraganaWords } from 'src/app/shared/constants/hiragana-words.constants';
 import { HiraganaWord } from 'src/app/shared/models/hiragana-word.type';
 import { WriteRomajiQuestionData } from '../models/write-romaji-question-data.type';
+import { FourTilesQuestionComponent } from '../components/four-tiles-one-answer-game/four-tiles-question.component';
+import { Question } from '../models/question.class';
 
 @Injectable({ providedIn: 'root' })
-export class GameCreatorService {
+export class QuestionCreatorService {
   readonly tileImagePathBase = '/assets/images/hiragana/';
-  goToNextExercise$ = new Subject<void>();
 
-  getGameData$(): Observable<FourTilesOneAnswerQuestionData> {
-    return this.goToNextExercise$.pipe(
-      startWith(0),
-      map(() => this.prepareGameData())
-    );
+  createQuiz(): Question[] {
+    return [
+      new Question(WriteRomajiQuestionComponent, this.createWriteRomajiQuestionData()),
+      new Question(FourTilesQuestionComponent, this.createFourTilesOneAnswerQuestionData()),
+      new Question(WriteRomajiQuestionComponent, this.createWriteRomajiQuestionData()),
+      new Question(FourTilesQuestionComponent, this.createFourTilesOneAnswerQuestionData()),
+      new Question(FourTilesQuestionComponent, this.createFourTilesOneAnswerQuestionData()),
+      new Question(FourTilesQuestionComponent, this.createFourTilesOneAnswerQuestionData()),
+      new Question(FourTilesQuestionComponent, this.createFourTilesOneAnswerQuestionData()),
+      new Question(FourTilesQuestionComponent, this.createFourTilesOneAnswerQuestionData()),
+      // new Question(WriteRomajiGameComponent, this.createWriteRomajiQuestionData()),
+    ];
   }
 
-  createQuiz() {}
-
-  prepareGameData(): FourTilesOneAnswerQuestionData {
+  createFourTilesOneAnswerQuestionData(): FourTilesQuestionData {
     const kanaSymbolsCount = hiraganaSyllables.length;
-    let fourRandomKanas: HiraganaSyllable[];
     const fourRandomIndexes = this.genereateRandomIndexes(4, kanaSymbolsCount);
 
-    fourRandomKanas = hiraganaSyllables.filter((_, index) => fourRandomIndexes.some((i) => i === index));
+    const fourKanaAnswers = hiraganaSyllables.filter((_, index) => fourRandomIndexes.some((i) => i === index));
 
-    const randomIndex = this.generateUniqueIndex(fourRandomKanas.length);
-    const correctAnswer = {
-      symbol: fourRandomKanas[randomIndex].symbol,
-      romaji: fourRandomKanas[randomIndex].romaji,
-    };
+    const correntAnswerIndex = this.generateUniqueIndex(fourKanaAnswers.length);
 
-    const gameTiles = fourRandomKanas.map((answerData) => {
+    const correctAnswer = fourKanaAnswers[correntAnswerIndex].romaji;
+
+    const gameTiles = fourKanaAnswers.map((answerData) => {
       const imagePath = `${this.tileImagePathBase}${answerData.romaji}.png`;
 
       return Builder<AnswerTile>()
-        .value(answerData.romaji)
         .imagePath(imagePath)
         .isSelected(false)
         .isColoredGreen(false)
         .isColoredRed(false)
+        .isDisabled(false)
         .build();
     });
 
-    return { answerTiles: gameTiles, correctAnswer };
+    return {
+      questionType: 'fourTiles',
+      answerTiles: gameTiles,
+      correctAnswer: { value: correctAnswer, index: correntAnswerIndex },
+    };
   }
 
   genereateRandomIndexes(indexesToGenerateCount: number, syllablesCount: number): number[] {
@@ -93,10 +100,10 @@ export class GameCreatorService {
     return kanaImages;
   }
 
-  getWriteRomajiQuestionData(): WriteRomajiQuestionData {
+  createWriteRomajiQuestionData(): WriteRomajiQuestionData {
     const kanaWord = this.getRandomKanaWord();
     const kanaImages = this.getImagesForWriteRomajiQuestion(kanaWord);
 
-    return { kanaImages, correctAnswer: kanaWord.romaji };
+    return { questionType: 'writeRomaji', kanaImages, correctAnswerRomaji: kanaWord.romaji };
   }
 }

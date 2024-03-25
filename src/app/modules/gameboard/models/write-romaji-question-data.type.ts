@@ -1,4 +1,5 @@
 export type WriteRomajiQuestionData = {
+  questionType: 'writeRomaji';
   kanaImages: string[];
-  correctAnswer: string;
-}
+  correctAnswerRomaji: string;
+};

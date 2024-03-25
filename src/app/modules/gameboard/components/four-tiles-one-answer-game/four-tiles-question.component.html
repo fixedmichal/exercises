@@ -1,0 +1,13 @@
+<section class="question-container">
+  <h2 class="question-header"
+    >Which one is '<span class="font-color-yelow">{{ correctAnswerRomaji }}</span
+    >' ?</h2
+  >
+  <div class="answers-container">
+    <app-answer-tile
+      *ngFor="let tile of answerTiles; let i = index"
+      [answerTileConfig]="tile"
+      [index]="i"
+      (tileSelected)="onTileSelected($event)" />
+  </div>
+</section>

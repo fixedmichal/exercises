@@ -1,9 +1,12 @@
-export type QuestionAnswerResultData<T> = {
+export type FourTilesQuestionResultData = {
+  questionType: 'fourTiles';
   isAnsweredCorrectly: boolean;
-  data: T;
+  correctAnswerIndex: number;
 };
 
 export type WriteRomajiQuestionResultData = {
-  correctAnswer: string;
+  questionType: 'writeRomaji';
+  isAnsweredCorrectly: boolean;
+  correctAnswerInRomaji: string;
   wordEnglishTranslation: string;
 };
