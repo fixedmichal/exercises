@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, ReplaySubject, Subject, first, map, of, scan, take, tap } from 'rxjs';
+import { Observable, ReplaySubject, Subject, first, map, mergeMap, of, scan, take, tap } from 'rxjs';
 import { Question } from '../models/question.class';
 import {
   FourTilesQuestionResultData,
@@ -20,8 +20,10 @@ export class QuizControllerService {
   constructor(private questionCreaterService: QuestionCreatorService) {}
 
   setupQuiz(): Observable<void> {
-    this.quizConfiguration = this.questionCreaterService.createQuiz();
-    return this.setupQuizQuestionsStream();
+    return of('setupQuiz').pipe(
+      tap(() => (this.quizConfiguration = this.questionCreaterService.createQuiz())),
+      mergeMap(() => this.setupQuizQuestionsStream())
+    );
   }
 
   setupQuizQuestionsStream(): Observable<void> {
@@ -29,7 +31,9 @@ export class QuizControllerService {
       scan((acc: number) => acc + 1, -1),
       map((questionCounter) => {
         console.log(questionCounter);
+
         this.currentQuestion$$.next(this.quizConfiguration[questionCounter]);
+
         return;
       }),
       take(this.quizConfiguration.length)
@@ -57,10 +61,10 @@ export class QuizControllerService {
         if (typeof answer === 'string' && currentQuestion.data.questionType === 'writeRomaji') {
           const correctAnswerInRomaji = currentQuestion.data.correctAnswerRomaji;
           const isAnsweredCorrectly = answer === correctAnswerInRomaji;
-
+          const wordEnglishTranslation = currentQuestion.data.wordEnglishTranslation;
           console.log('check if is ANSWER CORRECT');
 
-          return { questionType: 'writeRomaji', isAnsweredCorrectly, correctAnswerInRomaji };
+          return { questionType: 'writeRomaji', isAnsweredCorrectly, correctAnswerInRomaji, wordEnglishTranslation };
         }
         // TODO: write this \/ better
         return {};

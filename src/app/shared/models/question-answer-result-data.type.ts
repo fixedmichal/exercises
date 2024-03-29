@@ -1,12 +1,12 @@
-export type FourTilesQuestionResultData = {
+export interface FourTilesQuestionResultData {
   questionType: 'fourTiles';
   isAnsweredCorrectly: boolean;
   correctAnswerIndex: number;
-};
+}
 
-export type WriteRomajiQuestionResultData = {
+export interface WriteRomajiQuestionResultData {
   questionType: 'writeRomaji';
   isAnsweredCorrectly: boolean;
   correctAnswerInRomaji: string;
   wordEnglishTranslation: string;
-};
+}

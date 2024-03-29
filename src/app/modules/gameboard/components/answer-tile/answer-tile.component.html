@@ -1,11 +1,11 @@
 <button
-  class="tile"
+  class="answer-tile"
   [disabled]="answerTileConfig.isDisabled"
   [ngClass]="{
-    'tile--selected': answerTileConfig.isSelected,
-    'tile--colored-green': answerTileConfig.isColoredGreen,
-    'tile--colored-red': answerTileConfig.isColoredRed
+    'answer-tile--selected': answerTileConfig.isSelected,
+    'answer-tile--colored-green': answerTileConfig.isColoredGreen,
+    'answer-tile--colored-red': answerTileConfig.isColoredRed
   }"
   (click)="onClick()">
-  <img class="tile-image" [src]="answerTileConfig.imagePath" alt="" />
+  <img class="answer-tile__image" [src]="answerTileConfig.imagePath" alt="" />
 </button>

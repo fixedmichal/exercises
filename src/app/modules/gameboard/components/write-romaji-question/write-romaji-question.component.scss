@@ -1,0 +1,26 @@
+@import './../../../../../styles/variables.scss';
+
+.write-romaji-question {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3rem;
+
+    &__kana-word {
+      padding: 2rem 2rem;
+      background-color: $beatiful-yellow;
+
+      &__kana-image {
+        height: 5rem;
+        width: 5rem;
+      }
+    }
+  }
+}

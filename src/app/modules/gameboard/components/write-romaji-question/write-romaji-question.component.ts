@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { WriteRomajiQuestionData } from '../../models/write-romaji-question-data.type';
 import { FormControl } from '@angular/forms';
-import { Subject, takeUntil, tap } from 'rxjs';
+import { Subject, distinctUntilChanged, first, takeUntil, tap } from 'rxjs';
 import { QuestionCommunicationService } from '../../services/question-communication.service';
 
 @Component({
@@ -19,7 +19,19 @@ export class WriteRomajiQuestionComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.setContinueButtonClickedCallback();
 
-    this.answerControl.valueChanges.pipe(tap((value) => console.log(value))).subscribe();
+    this.answerControl.valueChanges
+      .pipe(
+        distinctUntilChanged(),
+        tap((value) => {
+          if (value.length) {
+            this.questionCommunicationService.sendIsContinueButtonDisabled(false);
+          } else {
+            this.questionCommunicationService.sendIsContinueButtonDisabled(true);
+          }
+        }),
+        takeUntil(this.componentDestroyed$)
+      )
+      .subscribe();
   }
 
   ngOnDestroy(): void {
@@ -28,7 +40,7 @@ export class WriteRomajiQuestionComponent implements OnInit, OnDestroy {
   }
 
   onContinueClick() {
-    this.questionCommunicationService.sendAnswerText(this.answerControl.value);
+    this.questionCommunicationService.sendwriteRomajiQuestionAnswered(this.answerControl.value);
 
     // if (this.answerControl.value === this.questionData.correctAnswerRomaji) {
     //   console.log('correct');

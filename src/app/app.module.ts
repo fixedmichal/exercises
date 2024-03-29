@@ -16,9 +16,10 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
-import { FourTilesQuestionComponent } from './modules/gameboard/components/four-tiles-one-answer-game/four-tiles-question.component';
-import { WriteRomajiQuestionComponent } from './modules/gameboard/components/write-romaji-game/write-romaji-question.component';
+import { FourTilesQuestionComponent } from './modules/gameboard/components/four-tiles-question/four-tiles-question.component';
+import { WriteRomajiQuestionComponent } from './modules/gameboard/components/write-romaji-question/write-romaji-question.component';
 import { A11yModule } from '@angular/cdk/a11y';
+import { AnswerFeedbackComponent } from './modules/gameboard/components/answer-feedback/answer-feedback.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { A11yModule } from '@angular/cdk/a11y';
     QuestionContentDirective,
     WriteRomajiQuestionComponent,
     FourTilesQuestionComponent,
+    AnswerFeedbackComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,18 @@
+<section class="write-romaji-question">
+  <h2 class="question__header">Enter romaji translation!</h2>
+
+  <div class="write-romaji-question__content">
+    <div class="write-romaji-question__content__kana-word">
+      <img
+        *ngFor="let imageUrl of questionData.kanaImages"
+        class="write-romaji-question__content__kana-word__kana-image"
+        [src]="imageUrl"
+        alt="" />
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Answer</mat-label>
+      <input matInput [formControl]="answerControl" [cdkTrapFocusAutoCapture]="true" [cdkTrapFocus]="true" required />
+    </mat-form-field>
+  </div>
+</section>

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { AnswerTile } from '../four-tiles-one-answer-game/models/answer-tile.interface';
+import { AnswerTile } from '../four-tiles-question/models/answer-tile.interface';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -19,7 +19,7 @@ import { Subject, filter, takeUntil, tap } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FourTilesQuestionComponent implements OnInit, OnDestroy {
-  audioUri: string;
+  audioUri: string; // TODO: add sounds or DELETE THIS
 
   answerTiles: AnswerTile[];
   correctAnswerRomaji: string;
@@ -52,10 +52,10 @@ export class FourTilesQuestionComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.answerTiles = this.questionData.answerTiles;
+    this.correctAnswerRomaji = this.questionData.correctAnswer.value;
+
     this.setContinueButtonClickedCallback();
     this.setAnswerAssessedCallback();
-    this.correctAnswerRomaji = this.questionData.correctAnswer.value;
-    console.log('correctAnswerIndex: ', this.questionData.correctAnswer.index);
   }
 
   ngOnDestroy(): void {
@@ -67,20 +67,30 @@ export class FourTilesQuestionComponent implements OnInit, OnDestroy {
     this.selectTileAndUnselectOtherTiles(tileIndex);
   }
 
-  selectTileAndUnselectOtherTiles(tileIndex: number): void {
+  private componentDestroyed$ = new Subject<void>();
+
+  private selectTileAndUnselectOtherTiles(tileIndex: number): void {
     if (this.answerTiles[tileIndex]) {
+      this.questionCommunicationService.sendIsContinueButtonDisabled(false);
       this.answerTiles = this.answerTiles.map((tile, index) =>
         index === tileIndex ? { ...tile, isSelected: !tile.isSelected } : { ...tile, isSelected: false }
       );
     }
   }
 
-  setContinueButtonClickedCallback(): void {
+  private disableAllTiles(): void {
+    this.answerTiles = this.answerTiles.map((tileData) => ({
+      ...tileData,
+      isDisabled: true,
+    }));
+  }
+
+  private setContinueButtonClickedCallback(): void {
     this.questionCommunicationService.continueButtonClicked$
       .pipe(
         filter(() => this.selectedTileIndex !== -1),
         tap(() => {
-          this.questionCommunicationService.sendAnswerIndex(this.selectedTileIndex);
+          this.questionCommunicationService.sendfourTilesQuestionAnswered(this.selectedTileIndex);
           this.areTilesDisabled = true;
         }),
         takeUntil(this.componentDestroyed$)
@@ -88,12 +98,11 @@ export class FourTilesQuestionComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  setAnswerAssessedCallback(): void {
+  private setAnswerAssessedCallback(): void {
     this.questionCommunicationService.answerAssessedFourTiles$
       .pipe(
-        filter(() => this.selectedTileIndex !== -1),
+        // filter(() => this.selectedTileIndex !== -1),
         tap((questionAnswerAssessed) => {
-          console.log('questionAnswerAssessed', questionAnswerAssessed?.isAnsweredCorrectly);
           this.answerTiles[this.selectedTileIndex].isColoredGreen = questionAnswerAssessed.isAnsweredCorrectly;
 
           if (!questionAnswerAssessed.isAnsweredCorrectly) {
@@ -109,63 +118,4 @@ export class FourTilesQuestionComponent implements OnInit, OnDestroy {
       )
       .subscribe();
   }
-
-  private componentDestroyed$ = new Subject<void>();
-
-  private disableAllTiles(): void {
-    this.answerTiles = this.answerTiles.map((tileData) => ({
-      ...tileData,
-      isDisabled: true,
-    }));
-  }
-
-  // sendAnswerData(): void {}
-
-  // onNextClick(): void {
-  //   this.questionData = this.gameService.createFourTilesOneAnswerQuestionData();
-
-  //   this.answerTiles = this.questionData.answerTiles;
-  //   this.correctAnswerRomaji = this.questionData.correctAnswerRomaji;
-  // }
-
-  // onContinueClick(): void {
-  //   const selectedTile = this.answerTiles.find((tileData) => tileData.isSelected);
-
-  //   if (selectedTile) {
-  //     const selectedTileIndex = this.answerTiles.indexOf(selectedTile);
-
-  //     // sets each element
-  //     this.answerTiles = this.answerTiles.map((tileData) => ({
-  //       ...tileData,
-  //       isDisabled: true,
-  //     }));
-
-  //     this.isAnsweredCorrectly = selectedTile.value === this.questionData.correctAnswerRomaji;
-  //     this.isAnsweredWrongly = !this.isAnsweredCorrectly;
-
-  //     if (this.isAnsweredCorrectly) {
-  //       this.answerTiles[selectedTileIndex].isColoredGreen = true;
-  //     } else {
-  //       this.answerTiles[selectedTileIndex].isColoredRed = true;
-
-  //       const tileWithCorrectAnswer = this.answerTiles.find(
-  //         (tileData) => tileData.value === this.questionData.correctAnswerRomaji
-  //       );
-
-  //       if (tileWithCorrectAnswer) {
-  //         tileWithCorrectAnswer.isColoredGreen = true;
-  //       }
-  //     }
-
-  //     this.isAnswerConfirmed = true;
-  //   }
-  // }
-
-  // onContinue2Click(): void {
-  //   this.isAnswerConfirmed = false;
-  //   this.questionData = this.gameService.createFourTilesOneAnswerQuestionData();
-
-  //   this.answerTiles = this.questionData.answerTiles;
-  //   this.correctAnswerRomaji = this.questionData.correctAnswerRomaji;
-  // }
 }

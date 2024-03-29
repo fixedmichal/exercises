@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, distinctUntilChanged } from 'rxjs';
 import {
   FourTilesQuestionResultData,
   WriteRomajiQuestionResultData,
@@ -8,10 +8,10 @@ import {
 @Injectable({ providedIn: 'root' })
 export class QuestionCommunicationService {
   private continueButtonClicked$$ = new Subject<void>();
-  private continueButtonDisabled$$ = new Subject<boolean>();
+  private isContinueButtonDisabled$$ = new BehaviorSubject<boolean>(true);
 
-  private answerIndex$$ = new Subject<number>();
-  private answerText$$ = new Subject<string>();
+  private fourTilesQuestionAnswered$$ = new Subject<number>();
+  private writeRomajiQuestionAnswered$$ = new Subject<string>();
 
   private answerAssessedFourTiles$$ = new Subject<FourTilesQuestionResultData>();
   private answerAssessedWriteRomaji$$ = new Subject<WriteRomajiQuestionResultData>();
@@ -20,16 +20,16 @@ export class QuestionCommunicationService {
     return this.continueButtonClicked$$.asObservable();
   }
 
-  get continueButtonDisabled$(): Observable<boolean> {
-    return this.continueButtonDisabled$$.asObservable();
+  get isContinueButtonDisabled$(): Observable<boolean> {
+    return this.isContinueButtonDisabled$$.asObservable().pipe(distinctUntilChanged());
   }
 
-  get answerIndex$(): Observable<number> {
-    return this.answerIndex$$.asObservable();
+  get fourTilesQuestionAnswered$(): Observable<number> {
+    return this.fourTilesQuestionAnswered$$.asObservable();
   }
 
-  get answerText$(): Observable<string> {
-    return this.answerText$$.asObservable();
+  get writeRomajiQuestionAnswered$(): Observable<string> {
+    return this.writeRomajiQuestionAnswered$$.asObservable();
   }
 
   get answerAssessedFourTiles$(): Observable<FourTilesQuestionResultData> {
@@ -40,19 +40,25 @@ export class QuestionCommunicationService {
     return this.answerAssessedWriteRomaji$$.asObservable();
   }
 
-  sendContinueButonClicked(): void {
+  sendContinueButtonClicked(): void {
     this.continueButtonClicked$$.next();
   }
 
-  sendAnswerIndex(answerIndex: number): void {
-    this.answerIndex$$.next(answerIndex);
+  sendIsContinueButtonDisabled(isContinueButtonDisabled: boolean) {
+    this.isContinueButtonDisabled$$.next(isContinueButtonDisabled);
   }
 
-  sendAnswerText(answer: string): void {
-    this.answerText$$.next(answer);
+  sendfourTilesQuestionAnswered(answerIndex: number): void {
+    this.fourTilesQuestionAnswered$$.next(answerIndex);
+  }
+
+  sendwriteRomajiQuestionAnswered(answer: string): void {
+    this.writeRomajiQuestionAnswered$$.next(answer);
   }
 
   sendAnswerAssessedFourTiles(value: FourTilesQuestionResultData): void {
+    console.log('COMMUNICATION SERVICE: sendAnswerAssessed');
+
     this.answerAssessedFourTiles$$.next(value);
   }
 

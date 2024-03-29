@@ -1,13 +1,13 @@
-import { WriteRomajiQuestionComponent } from '../components/write-romaji-game/write-romaji-question.component';
+import { WriteRomajiQuestionComponent } from '../components/write-romaji-question/write-romaji-question.component';
 import { Injectable } from '@angular/core';
 import { hiraganaSyllables } from '../../../shared/constants/hiragana-syllables.constants';
 import { Builder } from 'builder-pattern';
 import { FourTilesQuestionData } from '../models/four-tiles-question-data.type';
-import { AnswerTile } from '../components/four-tiles-one-answer-game/models/answer-tile.interface';
+import { AnswerTile } from '../components/four-tiles-question/models/answer-tile.interface';
 import { hiraganaWords } from 'src/app/shared/constants/hiragana-words.constants';
 import { HiraganaWord } from 'src/app/shared/models/hiragana-word.type';
 import { WriteRomajiQuestionData } from '../models/write-romaji-question-data.type';
-import { FourTilesQuestionComponent } from '../components/four-tiles-one-answer-game/four-tiles-question.component';
+import { FourTilesQuestionComponent } from '../components/four-tiles-question/four-tiles-question.component';
 import { Question } from '../models/question.class';
 
 @Injectable({ providedIn: 'root' })
@@ -104,6 +104,11 @@ export class QuestionCreatorService {
     const kanaWord = this.getRandomKanaWord();
     const kanaImages = this.getImagesForWriteRomajiQuestion(kanaWord);
 
-    return { questionType: 'writeRomaji', kanaImages, correctAnswerRomaji: kanaWord.romaji };
+    return {
+      questionType: 'writeRomaji',
+      kanaImages,
+      correctAnswerRomaji: kanaWord.romaji,
+      wordEnglishTranslation: kanaWord.englishTranslation,
+    };
   }
 }

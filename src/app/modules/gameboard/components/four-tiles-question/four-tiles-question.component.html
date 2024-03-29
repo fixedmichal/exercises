@@ -1,9 +1,9 @@
-<section class="question-container">
-  <h2 class="question-header"
+<section class="four-tiles">
+  <h2 class="question__header"
     >Which one is '<span class="font-color-yelow">{{ correctAnswerRomaji }}</span
     >' ?</h2
   >
-  <div class="answers-container">
+  <div class="four-tiles__content">
     <app-answer-tile
       *ngFor="let tile of answerTiles; let i = index"
       [answerTileConfig]="tile"

@@ -1,0 +1,17 @@
+.four-tiles {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  margin: auto;
+
+  &__content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2.5rem;
+
+    margin-top: 3rem;
+  }
+}

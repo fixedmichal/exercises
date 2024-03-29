@@ -1,21 +1,41 @@
-<section class="some-container">
-  <mat-progress-bar
-    mode="determinate"
-    bufferValue
-    [value]="counter$ | async"
-    color="warn"
-    class="question-time-counter"></mat-progress-bar>
-  <ng-template appQuestionContent />
+<div class="quiz-container">
+  <section class="quiz-container__content">
+    <mat-progress-bar
+      mode="determinate"
+      bufferValue
+      [value]="counter$ | async"
+      color="warn"
+      class="question-time-counter"></mat-progress-bar>
+    <ng-template appQuestionContent />
+  </section>
 
-  <div class="question-buttons-container">
+  <div
+    class="quiz-container__footer"
+    [ngClass]="{
+      'quiz-container__footer--highlighted-green': isAnsweredCorrectly,
+      'quiz-container__footer--highlighted-red': isAnsweredCorrectly === false,
+    }">
+    <button mat-raised-button color="warn" class="continue-button" (click)="onContinueClick()">Skip</button>
+
+    <app-answer-feedback
+      [answerResultFourTiles]="answerResultFourTiles"
+      [answerResultWriteRomaji]="answerResultWriteRomaji" />
+
     <ng-container *ngIf="!isAnswerConfirmed; else answerConfirmed">
-      <button mat-raised-button color="accent" class="continue-button" (click)="onContinueClick()">Continue</button>
+      <button
+        mat-raised-button
+        [disabled]="isContinueButtonDisabled$ | async"
+        color="accent"
+        class="continue-button"
+        (click)="onContinueClick()"
+        >Continue</button
+      >
     </ng-container>
 
     <ng-template #answerConfirmed>
-      <button mat-raised-button color="accent" class="continue-button" (click)="onContinue2Click()">Continue</button>
+      <button mat-raised-button color="accent" class="continue-button" (click)="onContinueSecondClick()"
+        >Continue</button
+      >
     </ng-template>
-
-    <button mat-raised-button color="accent" class="continue-button" (click)="onNextClick()">Next</button>
   </div>
-</section>
+</div>

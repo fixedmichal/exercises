@@ -1,4 +1,4 @@
-import { AnswerTile } from '../components/four-tiles-one-answer-game/models/answer-tile.interface';
+import { AnswerTile } from '../components/four-tiles-question/models/answer-tile.interface';
 
 export interface FourTilesQuestionData {
   questionType: 'fourTiles';

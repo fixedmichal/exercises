@@ -1,6 +1,6 @@
 $transition: all 0.15s ease-in-out;
 
-.tile {
+.answer-tile {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -12,6 +12,23 @@ $transition: all 0.15s ease-in-out;
   transition: $transition;
   box-shadow: 7px 6px 28px 1px rgba(0, 0, 0, 0.24);
 
+  &--selected {
+    transform: scale(1.2);
+    background-color: #256eff;
+  }
+
+  &--colored-green {
+    background-color: #69f0ae;
+  }
+
+  &--colored-red {
+    background-color: #bb0a21;
+  }
+
+  &[disabled]:hover {
+    pointer-events: none;
+  }
+
   &:hover {
     transition: $transition;
 
@@ -19,24 +36,7 @@ $transition: all 0.15s ease-in-out;
   }
 }
 
-.tile[disabled]:hover {
-  pointer-events: none;
-}
-
-.tile-image {
-  height: 80px;
-  width: 80px;
-}
-
-.tile--selected {
-  transform: scale(1.2);
-  background-color: #256eff;
-}
-
-.tile--colored-green {
-  background-color: #69f0ae;
-}
-
-.tile--colored-red {
-  background-color: #bb0a21;
+.answer-tile__image {
+  height: 5rem;
+  width: 5rem;
 }

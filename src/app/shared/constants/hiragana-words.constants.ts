@@ -36,7 +36,7 @@ export const hiraganaWords: HiraganaWord[] = [
   { hiragana: 'むし', romaji: 'mushi', englishTranslation: 'insect', dividedRomaji: 'mu-shi' },
   // { hiragana: 'めがね', romaji: 'megane', englishTranslation: 'glasses', dividedRomaji: 'me-ga-ne' },
   { hiragana: 'もち', romaji: 'mochi', englishTranslation: 'rice cake', dividedRomaji: 'mo-chi' },
-  { hiragana: 'やきゅう', romaji: 'yakyuu', englishTranslation: 'baseball', dividedRomaji: 'ya-kyu-u' },
+  // { hiragana: 'やきゅう', romaji: 'yakyuu', englishTranslation: 'baseball', dividedRomaji: 'ya-kyu-u' },
   // { hiragana: 'ゆうじん', romaji: 'yuujin', englishTranslation: 'friend', dividedRomaji: 'yu-u-ji-n' },
   { hiragana: 'よる', romaji: 'yoru', englishTranslation: 'night', dividedRomaji: 'yo-ru' },
   { hiragana: 'らいおん', romaji: 'raion', englishTranslation: 'lion', dividedRomaji: 'ra-i-o-n' },

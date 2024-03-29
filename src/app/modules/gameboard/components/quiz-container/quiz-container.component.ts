@@ -10,9 +10,28 @@ import {
   ViewChild,
 } from '@angular/core';
 import { QuestionContentDirective } from 'src/app/shared/directives/game-content.directive';
-import { Subject, map, of, switchMap, takeUntil, tap } from 'rxjs';
+import {
+  Subject,
+  concatMap,
+  delay,
+  exhaust,
+  exhaustMap,
+  filter,
+  first,
+  map,
+  mergeMap,
+  of,
+  switchMap,
+  takeUntil,
+  tap,
+  withLatestFrom,
+} from 'rxjs';
 import { QuestionCommunicationService } from '../../services/question-communication.service';
 import { QuizControllerService } from '../../services/quiz-controller.service';
+import {
+  FourTilesQuestionResultData,
+  WriteRomajiQuestionResultData,
+} from 'src/app/shared/models/question-answer-result-data.type';
 
 @Component({
   selector: 'app-quiz-container',
@@ -22,11 +41,18 @@ import { QuizControllerService } from '../../services/quiz-controller.service';
 })
 export class QuizContainerComponent implements OnInit, DoCheck, OnDestroy {
   @ViewChild(QuestionContentDirective, { static: true }) questionContentDirective: QuestionContentDirective;
-
+  private enterKeyDownEvent = new Subject<void>();
+  // unused so far
   counter$ = of(100);
+
+  answerResultWriteRomaji: WriteRomajiQuestionResultData | null;
+  answerResultFourTiles: FourTilesQuestionResultData | null;
+
   isAnswerConfirmed = false;
   isAnsweredCorrectly: boolean | null;
+
   currentQuestion$ = this.quizControllerService.currentQuestion$;
+  isContinueButtonDisabled$ = this.questionCommunicationService.isContinueButtonDisabled$.pipe();
 
   constructor(
     private questionCommunicationService: QuestionCommunicationService,
@@ -37,11 +63,11 @@ export class QuizContainerComponent implements OnInit, DoCheck, OnDestroy {
 
   @HostListener('document:keydown.enter')
   onKeydownHandler() {
-    this.questionCommunicationService.sendContinueButonClicked();
+    this.enterKeyDownEvent.next();
   }
 
   ngDoCheck(): void {
-    console.log(this.isAnswerConfirmed);
+    // console.log(this.isAnswerConfirmed);
   }
 
   ngOnDestroy(): void {
@@ -50,73 +76,98 @@ export class QuizContainerComponent implements OnInit, DoCheck, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.quizControllerService.setupQuiz().pipe(takeUntil(this.componentDestroyed$)).subscribe();
-
-    this.currentQuestion$
+    this.enterKeyDownEvent
+      .asObservable()
       .pipe(
-        map((question) => {
-          this.isAnswerConfirmed = false;
-          console.log('&&&&&& NEXT Question');
+        tap(() => console.log('keydown SUBJECT')),
+        withLatestFrom(this.isContinueButtonDisabled$),
+        tap((x) => console.log('isContinueButtonDisabled$', x)),
 
-          this.questionContentDirective.viewContainerRef.clear();
-          let component = this.questionContentDirective.viewContainerRef.createComponent(question.component);
-          component.setInput('questionData', question.data);
+        filter(([_, isDisabled]) => !isDisabled),
+        tap(() => {
+          console.log('ENTER PRESSED');
+          this.isAnswerConfirmed ? this.onContinueSecondClick() : this.onContinueClick();
+          this.cdr.markForCheck();
         }),
         takeUntil(this.componentDestroyed$)
       )
       .subscribe();
 
-    this.quizControllerService.sendGoToNextQuestion();
+    this.quizControllerService.setupQuiz().pipe(takeUntil(this.componentDestroyed$)).subscribe();
+    this.setupCurrentQuestionCallback();
+    this.setupFourTilesQuestionAnsweredCallback();
+    this.setupWriteRomajiQuestionAnsweredCallback();
 
-    this.questionCommunicationService.answerIndex$
+    this.quizControllerService.sendGoToNextQuestion();
+  }
+
+  onContinueClick(): void {
+    this.questionCommunicationService.sendContinueButtonClicked();
+  }
+
+  onContinueSecondClick(): void {
+    this.quizControllerService.sendGoToNextQuestion();
+  }
+
+  private setupCurrentQuestionCallback(): void {
+    this.currentQuestion$
       .pipe(
-        tap(() => console.log('questionAnswerIndex  RECEIVED!!')),
+        map((question) => {
+          this.answerResultWriteRomaji = null;
+          this.answerResultFourTiles = null;
+          this.isAnsweredCorrectly = null;
+
+          this.isAnswerConfirmed = false;
+
+          this.questionContentDirective.viewContainerRef.clear();
+          let component = this.questionContentDirective.viewContainerRef.createComponent(question.component);
+          component.setInput('questionData', question.data);
+
+          this.questionCommunicationService.sendIsContinueButtonDisabled(true);
+        }),
+        takeUntil(this.componentDestroyed$)
+      )
+      .subscribe();
+  }
+
+  private setupFourTilesQuestionAnsweredCallback(): void {
+    this.questionCommunicationService.fourTilesQuestionAnswered$
+      .pipe(
         switchMap((answerResult) => this.quizControllerService.checkIfIsAnswerCorrect(answerResult)),
         tap((answerResult) => {
           if (answerResult.questionType === 'fourTiles') {
             this.isAnswerConfirmed = true;
+            this.answerResultFourTiles = answerResult;
+            console.log(answerResult);
+
             this.isAnsweredCorrectly = answerResult.isAnsweredCorrectly;
-            console.log('sendQuestionAnswerAssessed');
             this.questionCommunicationService.sendAnswerAssessedFourTiles(answerResult);
           }
         }),
         takeUntil(this.componentDestroyed$)
       )
       .subscribe();
+  }
 
-    this.questionCommunicationService.answerText$
+  private setupWriteRomajiQuestionAnsweredCallback(): void {
+    this.questionCommunicationService.writeRomajiQuestionAnswered$
       .pipe(
-        tap(() => console.log('questionAnswerIndex  RECEIVED!!')),
         switchMap((answerText) => this.quizControllerService.checkIfIsAnswerCorrect(answerText)),
         tap((answerResult) => {
           if (answerResult.questionType === 'writeRomaji') {
-            console.log('setting isAnswerConfirmed to TRUE');
-
             this.isAnswerConfirmed = true;
+            this.answerResultWriteRomaji = answerResult;
+            console.log(answerResult);
 
             this.isAnsweredCorrectly = answerResult.isAnsweredCorrectly;
-            console.log('sendQuestionAnswerAssessed');
-
-            // I suppose it is unnecessary ??
+            this.cdr.markForCheck();
+            // It is probably not necessary?
             this.questionCommunicationService.sendAnswerAssessedWriteRomaji(answerResult);
           }
         }),
         takeUntil(this.componentDestroyed$)
       )
       .subscribe();
-  }
-
-  onContinueClick(): void {
-    this.questionCommunicationService.sendContinueButonClicked();
-  }
-
-  onContinue2Click(): void {
-    //
-    this.quizControllerService.sendGoToNextQuestion();
-  }
-
-  onNextClick(): void {
-    this.quizControllerService.sendGoToNextQuestion();
   }
 
   private componentDestroyed$ = new Subject<void>();
