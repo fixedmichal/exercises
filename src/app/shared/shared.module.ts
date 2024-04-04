@@ -10,10 +10,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ReactiveFormsModule } from '@angular/forms';
+import { A11yModule } from '@angular/cdk/a11y';
+import { ContentProjectionDirective } from './directives/content-projection.directive';
 
 @NgModule({
   providers: [],
-  declarations: [],
+  declarations: [ContentProjectionDirective],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -26,6 +28,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatButtonToggleModule,
     MatSnackBarModule,
     MatProgressBarModule,
+    A11yModule,
   ],
   exports: [
     ReactiveFormsModule,
@@ -37,6 +40,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatCardModule,
     MatSnackBarModule,
     MatProgressBarModule,
+    A11yModule,
+    ContentProjectionDirective,
   ],
 })
 export class SharedModule {}

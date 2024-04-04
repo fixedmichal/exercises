@@ -1,16 +1,19 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DashboardComponent } from './modules/gameboard/components/dashboard/dashboard.component';
-import { QuizContainerComponent } from './modules/gameboard/components/quiz-container/quiz-container.component';
+import { DashboardComponent } from './modules/dashboard/components/dashboard/dashboard.component';
 import { AuthComponent } from './modules/auth/pages/auth/auth.component';
 import { canActivate, redirectLoggedInTo, redirectUnauthorizedTo } from '@angular/fire/auth-guard';
 
 const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent, ...canActivate(() => redirectUnauthorizedTo(['auth'])) },
-  { path: 'learn', component: QuizContainerComponent },
+  {
+    path: 'quiz',
+    ...canActivate(() => redirectUnauthorizedTo(['auth'])),
+    loadChildren: () => import('src/app/modules/quiz/quiz.module').then((m) => m.QuizModule),
+  },
   {
     path: 'auth',
-    component: AuthComponent,
+    loadChildren: () => import('src/app/modules/auth/auth.module').then((m) => m.AuthModule),
     ...canActivate(() => redirectLoggedInTo(['dashboard'])),
   },
 

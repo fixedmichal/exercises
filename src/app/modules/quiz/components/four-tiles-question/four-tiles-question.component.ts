@@ -8,7 +8,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { FourTilesQuestionData } from '../../models/four-tiles-question-data.type';
-import { AnswerTile } from './models/answer-tile.interface';
+import { AnswerTile } from '../../../../shared/models/answer-tile.interface';
 import { QuestionCommunicationService } from '../../services/question-communication.service';
 import { Subject, filter, takeUntil, tap } from 'rxjs';
 
@@ -90,7 +90,7 @@ export class FourTilesQuestionComponent implements OnInit, OnDestroy {
       .pipe(
         filter(() => this.selectedTileIndex !== -1),
         tap(() => {
-          this.questionCommunicationService.sendfourTilesQuestionAnswered(this.selectedTileIndex);
+          this.questionCommunicationService.sendFourTilesQuestionAnswered(this.selectedTileIndex);
           this.areTilesDisabled = true;
         }),
         takeUntil(this.componentDestroyed$)
@@ -101,7 +101,6 @@ export class FourTilesQuestionComponent implements OnInit, OnDestroy {
   private setAnswerAssessedCallback(): void {
     this.questionCommunicationService.answerAssessedFourTiles$
       .pipe(
-        // filter(() => this.selectedTileIndex !== -1),
         tap((questionAnswerAssessed) => {
           this.answerTiles[this.selectedTileIndex].isColoredGreen = questionAnswerAssessed.isAnsweredCorrectly;
 

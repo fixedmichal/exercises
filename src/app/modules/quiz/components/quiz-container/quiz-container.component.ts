@@ -9,29 +9,15 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { QuestionContentDirective } from 'src/app/shared/directives/game-content.directive';
-import {
-  Subject,
-  concatMap,
-  delay,
-  exhaust,
-  exhaustMap,
-  filter,
-  first,
-  map,
-  mergeMap,
-  of,
-  switchMap,
-  takeUntil,
-  tap,
-  withLatestFrom,
-} from 'rxjs';
+import { Subject, filter, map, of, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs';
 import { QuestionCommunicationService } from '../../services/question-communication.service';
 import { QuizControllerService } from '../../services/quiz-controller.service';
 import {
   FourTilesQuestionResultData,
   WriteRomajiQuestionResultData,
 } from 'src/app/shared/models/question-answer-result-data.type';
+import { QuestionType } from 'src/app/shared/models/question-type.enum';
+import { ContentProjectionDirective } from 'src/app/shared/directives/content-projection.directive';
 
 @Component({
   selector: 'app-quiz-container',
@@ -40,8 +26,8 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QuizContainerComponent implements OnInit, DoCheck, OnDestroy {
-  @ViewChild(QuestionContentDirective, { static: true }) questionContentDirective: QuestionContentDirective;
-  private enterKeyDownEvent = new Subject<void>();
+  @ViewChild(ContentProjectionDirective, { static: true }) questionContentDirective: ContentProjectionDirective;
+  private enterKeydown$ = new Subject<void>();
   // unused so far
   counter$ = of(100);
 
@@ -62,8 +48,8 @@ export class QuizContainerComponent implements OnInit, DoCheck, OnDestroy {
   ) {}
 
   @HostListener('document:keydown.enter')
-  onKeydownHandler() {
-    this.enterKeyDownEvent.next();
+  onEnterKeydownHandler() {
+    this.enterKeydown$.next();
   }
 
   ngDoCheck(): void {
@@ -76,27 +62,13 @@ export class QuizContainerComponent implements OnInit, DoCheck, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.enterKeyDownEvent
-      .asObservable()
-      .pipe(
-        tap(() => console.log('keydown SUBJECT')),
-        withLatestFrom(this.isContinueButtonDisabled$),
-        tap((x) => console.log('isContinueButtonDisabled$', x)),
-
-        filter(([_, isDisabled]) => !isDisabled),
-        tap(() => {
-          console.log('ENTER PRESSED');
-          this.isAnswerConfirmed ? this.onContinueSecondClick() : this.onContinueClick();
-          this.cdr.markForCheck();
-        }),
-        takeUntil(this.componentDestroyed$)
-      )
-      .subscribe();
-
     this.quizControllerService.setupQuiz().pipe(takeUntil(this.componentDestroyed$)).subscribe();
+
     this.setupCurrentQuestionCallback();
+
     this.setupFourTilesQuestionAnsweredCallback();
     this.setupWriteRomajiQuestionAnsweredCallback();
+    this.setupEnterKeyDownCallback();
 
     this.quizControllerService.sendGoToNextQuestion();
   }
@@ -113,11 +85,7 @@ export class QuizContainerComponent implements OnInit, DoCheck, OnDestroy {
     this.currentQuestion$
       .pipe(
         map((question) => {
-          this.answerResultWriteRomaji = null;
-          this.answerResultFourTiles = null;
-          this.isAnsweredCorrectly = null;
-
-          this.isAnswerConfirmed = false;
+          this.cleanupAnswerDataFields();
 
           this.questionContentDirective.viewContainerRef.clear();
           let component = this.questionContentDirective.viewContainerRef.createComponent(question.component);
@@ -135,7 +103,7 @@ export class QuizContainerComponent implements OnInit, DoCheck, OnDestroy {
       .pipe(
         switchMap((answerResult) => this.quizControllerService.checkIfIsAnswerCorrect(answerResult)),
         tap((answerResult) => {
-          if (answerResult.questionType === 'fourTiles') {
+          if (answerResult.questionType === QuestionType.FourTiles) {
             this.isAnswerConfirmed = true;
             this.answerResultFourTiles = answerResult;
             console.log(answerResult);
@@ -154,13 +122,14 @@ export class QuizContainerComponent implements OnInit, DoCheck, OnDestroy {
       .pipe(
         switchMap((answerText) => this.quizControllerService.checkIfIsAnswerCorrect(answerText)),
         tap((answerResult) => {
-          if (answerResult.questionType === 'writeRomaji') {
+          if (answerResult.questionType === QuestionType.WriteRomaji) {
             this.isAnswerConfirmed = true;
             this.answerResultWriteRomaji = answerResult;
             console.log(answerResult);
 
             this.isAnsweredCorrectly = answerResult.isAnsweredCorrectly;
             this.cdr.markForCheck();
+
             // It is probably not necessary?
             this.questionCommunicationService.sendAnswerAssessedWriteRomaji(answerResult);
           }
@@ -168,6 +137,33 @@ export class QuizContainerComponent implements OnInit, DoCheck, OnDestroy {
         takeUntil(this.componentDestroyed$)
       )
       .subscribe();
+  }
+
+  private setupEnterKeyDownCallback(): void {
+    this.enterKeydown$
+      .asObservable()
+      .pipe(
+        tap(() => console.log('keydown SUBJECT')),
+        withLatestFrom(this.isContinueButtonDisabled$),
+        tap((x) => console.log('isContinueButtonDisabled$', x)),
+
+        filter(([_, isDisabled]) => !isDisabled),
+        tap(() => {
+          console.log('ENTER presses and BONTINUE BUTTON is not disabled');
+          this.isAnswerConfirmed ? this.onContinueSecondClick() : this.onContinueClick();
+          this.cdr.markForCheck();
+        }),
+        takeUntil(this.componentDestroyed$)
+      )
+      .subscribe();
+  }
+
+  private cleanupAnswerDataFields(): void {
+    this.answerResultWriteRomaji = null;
+    this.answerResultFourTiles = null;
+    this.isAnsweredCorrectly = null;
+
+    this.isAnswerConfirmed = false;
   }
 
   private componentDestroyed$ = new Subject<void>();

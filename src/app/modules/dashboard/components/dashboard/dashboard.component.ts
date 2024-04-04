@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -7,11 +7,11 @@ import { Router } from '@angular/router';
   styleUrls: ['./dashboard.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent {
   constructor(private router: Router) {}
-  ngOnInit(): void {}
 
   goToLearnHiraganaPage(): void {
-    this.router.navigate(['learn']);
+    this.router.navigate(['quiz']);
+    console.log('dupa');
   }
 }

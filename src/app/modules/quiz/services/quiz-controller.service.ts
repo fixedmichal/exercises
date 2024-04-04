@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable, ReplaySubject, Subject, first, map, mergeMap, of, scan, take, tap } from 'rxjs';
+import { Observable, ReplaySubject, Subject, finalize, first, map, mergeMap, of, scan, take, tap } from 'rxjs';
 import { Question } from '../models/question.class';
 import {
   FourTilesQuestionResultData,
   WriteRomajiQuestionResultData,
 } from 'src/app/shared/models/question-answer-result-data.type';
 import { QuestionCreatorService } from './question-creator.service';
+import { QuestionType } from 'src/app/shared/models/question-type.enum';
 
 @Injectable({ providedIn: 'root' })
 export class QuizControllerService {
@@ -36,6 +37,9 @@ export class QuizControllerService {
 
         return;
       }),
+      finalize(() => {
+        console.log('dupa');
+      }),
       take(this.quizConfiguration.length)
     );
   }
@@ -46,11 +50,11 @@ export class QuizControllerService {
 
   checkIfIsAnswerCorrect(answer: number): Observable<FourTilesQuestionResultData>;
   checkIfIsAnswerCorrect(answer: string): Observable<WriteRomajiQuestionResultData>;
-  checkIfIsAnswerCorrect(answer: number | string): Observable<any> {
+  checkIfIsAnswerCorrect(answer: number | string): Observable<unknown> {
     return this.currentQuestion$.pipe(
       first(),
       map((currentQuestion) => {
-        if (typeof answer === 'number' && currentQuestion.data.questionType === 'fourTiles') {
+        if (typeof answer === 'number' && currentQuestion.data.questionType === QuestionType.FourTiles) {
           const correctAnswerIndex = currentQuestion.data.correctAnswer.index;
           const isAnsweredCorrectly = answer === correctAnswerIndex;
 
@@ -58,7 +62,7 @@ export class QuizControllerService {
           return { questionType: 'fourTiles', isAnsweredCorrectly, correctAnswerIndex };
         }
 
-        if (typeof answer === 'string' && currentQuestion.data.questionType === 'writeRomaji') {
+        if (typeof answer === 'string' && currentQuestion.data.questionType === QuestionType.WriteRomaji) {
           const correctAnswerInRomaji = currentQuestion.data.correctAnswerRomaji;
           const isAnsweredCorrectly = answer === correctAnswerInRomaji;
           const wordEnglishTranslation = currentQuestion.data.wordEnglishTranslation;
@@ -68,6 +72,9 @@ export class QuizControllerService {
         }
         // TODO: write this \/ better
         return {};
+      }),
+      finalize(() => {
+        console.log('checkIfIsAnswerCorrect completed');
       })
     );
   }

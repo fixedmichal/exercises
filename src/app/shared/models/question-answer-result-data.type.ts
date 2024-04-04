@@ -1,11 +1,13 @@
+import { QuestionType } from './question-type.enum';
+
 export interface FourTilesQuestionResultData {
-  questionType: 'fourTiles';
+  questionType: QuestionType.FourTiles;
   isAnsweredCorrectly: boolean;
   correctAnswerIndex: number;
 }
 
 export interface WriteRomajiQuestionResultData {
-  questionType: 'writeRomaji';
+  questionType: QuestionType.WriteRomaji;
   isAnsweredCorrectly: boolean;
   correctAnswerInRomaji: string;
   wordEnglishTranslation: string;

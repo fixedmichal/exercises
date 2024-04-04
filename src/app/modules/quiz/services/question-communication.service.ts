@@ -48,7 +48,7 @@ export class QuestionCommunicationService {
     this.isContinueButtonDisabled$$.next(isContinueButtonDisabled);
   }
 
-  sendfourTilesQuestionAnswered(answerIndex: number): void {
+  sendFourTilesQuestionAnswered(answerIndex: number): void {
     this.fourTilesQuestionAnswered$$.next(answerIndex);
   }
 
@@ -57,8 +57,6 @@ export class QuestionCommunicationService {
   }
 
   sendAnswerAssessedFourTiles(value: FourTilesQuestionResultData): void {
-    console.log('COMMUNICATION SERVICE: sendAnswerAssessed');
-
     this.answerAssessedFourTiles$$.next(value);
   }
 

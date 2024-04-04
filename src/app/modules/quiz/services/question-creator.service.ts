@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { hiraganaSyllables } from '../../../shared/constants/hiragana-syllables.constants';
 import { Builder } from 'builder-pattern';
 import { FourTilesQuestionData } from '../models/four-tiles-question-data.type';
-import { AnswerTile } from '../components/four-tiles-question/models/answer-tile.interface';
+import { AnswerTile } from '../../../shared/models/answer-tile.interface';
 import { hiraganaWords } from 'src/app/shared/constants/hiragana-words.constants';
 import { HiraganaWord } from 'src/app/shared/models/hiragana-word.type';
 import { WriteRomajiQuestionData } from '../models/write-romaji-question-data.type';
