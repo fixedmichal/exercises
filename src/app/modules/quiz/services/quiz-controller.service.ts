@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, ReplaySubject, Subject, finalize, first, map, mergeMap, of, scan, take, tap } from 'rxjs';
+import { Observable, ReplaySubject, Subject, finalize, first, map, scan, take, takeUntil, tap } from 'rxjs';
 import { Question } from '../models/question.class';
 import {
   FourTilesQuestionResultData,
@@ -7,9 +7,16 @@ import {
 } from 'src/app/shared/models/question-answer-result-data.type';
 import { QuestionCreatorService } from './question-creator.service';
 import { QuestionType } from 'src/app/shared/models/question-type.enum';
+import { QuizScoreService } from './quiz-score.service';
+import { QuestionScore } from '../models/question-score.enum';
+import { QuizQuestionsScore } from '../models/quiz-score.class';
+import { KanasScoresAggregator } from '../models/kana-scores.class';
+import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class QuizControllerService {
+  isQuizInProgress = false;
+
   get gotoNextQuestion$(): Observable<void> {
     return this.goToNextQuestion$$.asObservable();
   }
@@ -18,29 +25,30 @@ export class QuizControllerService {
     return this.currentQuestion$$.asObservable();
   }
 
-  constructor(private questionCreaterService: QuestionCreatorService) {}
-
-  setupQuiz(): Observable<void> {
-    return of('setupQuiz').pipe(
-      tap(() => (this.quizConfiguration = this.questionCreaterService.createQuiz())),
-      mergeMap(() => this.setupQuizQuestionsStream())
-    );
+  get quizScore$(): Observable<QuizQuestionsScore> {
+    return this.quizScoreService.quizScore$;
   }
 
-  setupQuizQuestionsStream(): Observable<void> {
-    return this.goToNextQuestion$$.pipe(
-      scan((acc: number) => acc + 1, -1),
-      map((questionCounter) => {
-        console.log(questionCounter);
+  get kanaScores$(): Observable<KanasScoresAggregator> {
+    return this.quizScoreService.quizKanaScores$;
+  }
 
-        this.currentQuestion$$.next(this.quizConfiguration[questionCounter]);
+  constructor(
+    private questionCreaterService: QuestionCreatorService,
+    private quizScoreService: QuizScoreService,
+    private router: Router
+  ) {}
 
-        return;
-      }),
-      finalize(() => {
-        console.log('dupa');
-      }),
-      take(this.quizConfiguration.length)
+  setupQuizAndGetPlayerScores(): Observable<void> {
+    this.quizScoreService.cleanupScore();
+    this.quizConfiguration = this.questionCreaterService.createQuiz();
+
+    return this.setupQuizQuestionsStream().pipe(
+      tap(() => {
+        this.isQuizInProgress = true;
+        this.quizScoreService.fetchPlayerTotalKanasScores();
+        this.quizScoreService.fetchPlayerTotalQuestionsScore();
+      })
     );
   }
 
@@ -58,7 +66,13 @@ export class QuizControllerService {
           const correctAnswerIndex = currentQuestion.data.correctAnswer.index;
           const isAnsweredCorrectly = answer === correctAnswerIndex;
 
-          console.log('check if is ANSWER CORRECT');
+          this.quizScoreService.rateQuestion(isAnsweredCorrectly ? QuestionScore.GOOD : QuestionScore.BAD);
+
+          this.quizScoreService.changeKanaScore(
+            currentQuestion.data.answerTiles[correctAnswerIndex].value,
+            isAnsweredCorrectly ? QuestionScore.GOOD : QuestionScore.BAD
+          );
+
           return { questionType: 'fourTiles', isAnsweredCorrectly, correctAnswerIndex };
         }
 
@@ -66,16 +80,44 @@ export class QuizControllerService {
           const correctAnswerInRomaji = currentQuestion.data.correctAnswerRomaji;
           const isAnsweredCorrectly = answer === correctAnswerInRomaji;
           const wordEnglishTranslation = currentQuestion.data.wordEnglishTranslation;
-          console.log('check if is ANSWER CORRECT');
+
+          this.quizScoreService.rateQuestion(isAnsweredCorrectly ? QuestionScore.GOOD : QuestionScore.BAD);
 
           return { questionType: 'writeRomaji', isAnsweredCorrectly, correctAnswerInRomaji, wordEnglishTranslation };
         }
         // TODO: write this \/ better
         return {};
+      })
+    );
+  }
+
+  updateScores(): void {
+    this.quizScoreService.updatePlayerTotalKanasScores();
+    this.quizScoreService.updatePlayerTotalQuestionsScore();
+  }
+
+  private setupQuizQuestionsStream(): Observable<void> {
+    return this.goToNextQuestion$$.pipe(
+      scan((acc: number) => acc + 1, -1),
+      tap((counter) => {
+        console.log('counter', counter);
+        if (counter === this.quizConfiguration.length) {
+          this.router.navigate(['/quiz/results']);
+        }
+      }),
+      map((questionCounter) => {
+        if (questionCounter !== this.quizConfiguration.length) {
+          this.currentQuestion$$.next(this.quizConfiguration[questionCounter]);
+        }
+
+        return;
       }),
       finalize(() => {
-        console.log('checkIfIsAnswerCorrect completed');
-      })
+        console.log('FINALIZEFINALIZEFINALIZEFINALIZEFINALIZEFINALIZEFINALIZEFINALIZEFINALIZE');
+        this.quizScoreService.quizScore$.pipe(first(), tap(console.log)).subscribe(); //TODO: delete this line
+        this.quizScoreService.quizKanaScores$.pipe(first(), tap(console.log)).subscribe();
+      }),
+      take(this.quizConfiguration.length + 1)
     );
   }
 

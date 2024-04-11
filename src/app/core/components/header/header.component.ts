@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { EMPTY, catchError, startWith, tap } from 'rxjs';
+import { AppRoutes } from 'src/app/app-routes.enum';
 import { AuthenticationService } from 'src/app/modules/auth/services/authentication.service';
 import { NotificationService } from 'src/app/shared/services/storage/notification.service';
 
@@ -20,7 +21,7 @@ export class HeaderComponent {
   isUserLoggedIn$ = this.authenticationService.isUserLoggedIn$.pipe(startWith(undefined));
 
   onLoginClick(): void {
-    this.router.navigate(['auth']);
+    this.navigateToAuth();
   }
 
   onLogoutClick(): void {
@@ -28,7 +29,7 @@ export class HeaderComponent {
       .logout()
       .pipe(
         tap(() => {
-          this.router.navigate(['auth']);
+          this.navigateToAuth();
         }),
         catchError((error) => {
           console.error(error);
@@ -38,5 +39,9 @@ export class HeaderComponent {
         })
       )
       .subscribe();
+  }
+
+  navigateToAuth(): void {
+    this.router.navigate([AppRoutes.Auth]);
   }
 }

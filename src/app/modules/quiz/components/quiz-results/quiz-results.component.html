@@ -1,0 +1,24 @@
+<div class="quiz-results">
+  <div class="quiz-results__header">
+    <h1 class="quiz-results__title question__header">Results</h1>
+    <p class="quiz-results__description">You have completed the quiz. Here are your results:</p>
+  </div>
+  <div class="quiz-results__content">
+    <div class="quiz-results__questions-score">
+      <p class="quiz-results__questions-score-text">Your score is:</p>
+      <p class="quiz-results__score-value question__header japanese-font" *ngIf="quizScore$ | async as quizScore"
+        >{{ kanjiNumbers[quizScore.correctAnswersCount] }}/{{ kanjiNumbers[quizScore.questionsCount] }}</p
+      >
+    </div>
+    <div class="quiz-results__kana-score-list">
+      <div class="quiz-results__kana-score" *ngFor="let kanaScore of kanaScores$ | async | keyvalue">
+        <div class="quiz-results__kana-score__content">
+          {{ kanaScore.key }} {{ kanaScore.value.correctAnswersCount }} / {{ kanaScore.value.attemptsCount }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="quiz-results__actions">
+    <button class="quiz-results__action-button" (click)="onClick()">Restart</button>
+  </div>
+</div>

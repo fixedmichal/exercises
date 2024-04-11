@@ -10,8 +10,9 @@ export const environment = {
     apiKey: 'AIzaSyDzKGebV0nN9zRRkOkW5Cyr6wK7-od-0DQ',
     authDomain: 'learnkana10672.firebaseapp.com',
     messagingSenderId: '796542558779',
+    databaseURL: 'https://learnkana10672-default-rtdb.europe-west1.firebasedatabase.app/',
   },
-	production: false
+  production: false,
 };
 
 /*

@@ -1,0 +1,21 @@
+.quiz-score {
+  display: flex;
+  justify-content: center;
+  gap: 0.7rem;
+  margin: 0 auto;
+
+  &__score {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background-color: #9d91a3;
+
+    &--correct {
+      background-color: #4caf50;
+    }
+
+    &--incorrect {
+      background-color: #f44336;
+    }
+  }
+}

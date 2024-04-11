@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AppRoutes } from 'src/app/app-routes.enum';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,7 +12,6 @@ export class DashboardComponent {
   constructor(private router: Router) {}
 
   goToLearnHiraganaPage(): void {
-    this.router.navigate(['quiz']);
-    console.log('dupa');
+    this.router.navigate([AppRoutes.Quiz]);
   }
 }

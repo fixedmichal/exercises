@@ -10,7 +10,7 @@ import {
 import { FourTilesQuestionData } from '../../models/four-tiles-question-data.type';
 import { AnswerTile } from '../../../../shared/models/answer-tile.interface';
 import { QuestionCommunicationService } from '../../services/question-communication.service';
-import { Subject, filter, takeUntil, tap } from 'rxjs';
+import { Subject, filter, first, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-four-tiles-question',
@@ -71,10 +71,12 @@ export class FourTilesQuestionComponent implements OnInit, OnDestroy {
 
   private selectTileAndUnselectOtherTiles(tileIndex: number): void {
     if (this.answerTiles[tileIndex]) {
-      this.questionCommunicationService.sendIsContinueButtonDisabled(false);
       this.answerTiles = this.answerTiles.map((tile, index) =>
         index === tileIndex ? { ...tile, isSelected: !tile.isSelected } : { ...tile, isSelected: false }
       );
+
+      const isAnyTileSelected = this.answerTiles.some((tileData) => tileData.isSelected);
+      this.questionCommunicationService.sendIsContinueButtonDisabled(!isAnyTileSelected);
     }
   }
 

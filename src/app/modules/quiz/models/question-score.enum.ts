@@ -1,5 +1,5 @@
 export enum QuestionScore {
   GOOD = 1,
-  BAD = 0,
-  UNANSWERED = -1,
+  UNANSWERED = 0,
+  BAD = -1,
 }

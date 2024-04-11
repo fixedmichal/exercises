@@ -4,12 +4,11 @@ import {
   Component,
   DoCheck,
   HostListener,
-  NgZone,
   OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { Subject, filter, map, of, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs';
+import { Subject, filter, finalize, map, of, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs';
 import { QuestionCommunicationService } from '../../services/question-communication.service';
 import { QuizControllerService } from '../../services/quiz-controller.service';
 import {
@@ -28,23 +27,26 @@ import { ContentProjectionDirective } from 'src/app/shared/directives/content-pr
 export class QuizContainerComponent implements OnInit, DoCheck, OnDestroy {
   @ViewChild(ContentProjectionDirective, { static: true }) questionContentDirective: ContentProjectionDirective;
   private enterKeydown$ = new Subject<void>();
+  private componentDestroyed$ = new Subject<void>();
+
   // unused so far
   counter$ = of(100);
 
-  answerResultWriteRomaji: WriteRomajiQuestionResultData | null;
+  quizScore$ = this.quizControllerService.quizScore$.pipe(tap((x) => console.log('>>>>>>>>>>>>>> EMIT QUIZSCORE$', x)));
+
+  answerResultWriteRomaji: WriteRomajiQuestionResultData | null; // there will be more and more of this
   answerResultFourTiles: FourTilesQuestionResultData | null;
 
   isAnswerConfirmed = false;
   isAnsweredCorrectly: boolean | null;
 
   currentQuestion$ = this.quizControllerService.currentQuestion$;
-  isContinueButtonDisabled$ = this.questionCommunicationService.isContinueButtonDisabled$.pipe();
+  isContinueButtonDisabled$ = this.questionCommunicationService.isContinueButtonDisabled$;
 
   constructor(
     private questionCommunicationService: QuestionCommunicationService,
     private quizControllerService: QuizControllerService,
-    private cdr: ChangeDetectorRef,
-    private ngZone: NgZone
+    private cdr: ChangeDetectorRef
   ) {}
 
   @HostListener('document:keydown.enter')
@@ -62,18 +64,19 @@ export class QuizContainerComponent implements OnInit, DoCheck, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.quizControllerService.setupQuiz().pipe(takeUntil(this.componentDestroyed$)).subscribe();
+    this.quizControllerService.setupQuizAndGetPlayerScores().pipe(takeUntil(this.componentDestroyed$)).subscribe();
 
     this.setupCurrentQuestionCallback();
 
     this.setupFourTilesQuestionAnsweredCallback();
     this.setupWriteRomajiQuestionAnsweredCallback();
+
     this.setupEnterKeyDownCallback();
 
     this.quizControllerService.sendGoToNextQuestion();
   }
 
-  onContinueClick(): void {
+  onContinueFirstClick(): void {
     this.questionCommunicationService.sendContinueButtonClicked();
   }
 
@@ -93,6 +96,9 @@ export class QuizContainerComponent implements OnInit, DoCheck, OnDestroy {
 
           this.questionCommunicationService.sendIsContinueButtonDisabled(true);
         }),
+        finalize(() => {
+          console.log('FINALIZED setupCurrentQuestionCallback FINALIZED!!!!!!');
+        }),
         takeUntil(this.componentDestroyed$)
       )
       .subscribe();
@@ -106,7 +112,6 @@ export class QuizContainerComponent implements OnInit, DoCheck, OnDestroy {
           if (answerResult.questionType === QuestionType.FourTiles) {
             this.isAnswerConfirmed = true;
             this.answerResultFourTiles = answerResult;
-            console.log(answerResult);
 
             this.isAnsweredCorrectly = answerResult.isAnsweredCorrectly;
             this.questionCommunicationService.sendAnswerAssessedFourTiles(answerResult);
@@ -130,7 +135,7 @@ export class QuizContainerComponent implements OnInit, DoCheck, OnDestroy {
             this.isAnsweredCorrectly = answerResult.isAnsweredCorrectly;
             this.cdr.markForCheck();
 
-            // It is probably not necessary?
+            // TODO: It is probably not necessary?
             this.questionCommunicationService.sendAnswerAssessedWriteRomaji(answerResult);
           }
         }),
@@ -143,14 +148,10 @@ export class QuizContainerComponent implements OnInit, DoCheck, OnDestroy {
     this.enterKeydown$
       .asObservable()
       .pipe(
-        tap(() => console.log('keydown SUBJECT')),
         withLatestFrom(this.isContinueButtonDisabled$),
-        tap((x) => console.log('isContinueButtonDisabled$', x)),
-
         filter(([_, isDisabled]) => !isDisabled),
         tap(() => {
-          console.log('ENTER presses and BONTINUE BUTTON is not disabled');
-          this.isAnswerConfirmed ? this.onContinueSecondClick() : this.onContinueClick();
+          this.isAnswerConfirmed ? this.onContinueSecondClick() : this.onContinueFirstClick();
           this.cdr.markForCheck();
         }),
         takeUntil(this.componentDestroyed$)
@@ -165,6 +166,4 @@ export class QuizContainerComponent implements OnInit, DoCheck, OnDestroy {
 
     this.isAnswerConfirmed = false;
   }
-
-  private componentDestroyed$ = new Subject<void>();
 }

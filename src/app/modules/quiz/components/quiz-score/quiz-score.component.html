@@ -1,0 +1,10 @@
+<div class="quiz-score">
+  <div
+    class="quiz-score__score"
+    *ngFor="let score of quizScore.questionsScore"
+    [ngClass]="{
+      'quiz-score__score--correct': score === 1,
+      'quiz-score__score--incorrect': score === -1
+    }">
+  </div>
+</div>

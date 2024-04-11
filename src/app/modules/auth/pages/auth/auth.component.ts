@@ -5,6 +5,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { EMPTY } from 'rxjs';
 import { NotificationService } from 'src/app/shared/services/storage/notification.service';
+import { AppRoutes } from 'src/app/app-routes.enum';
 
 @Component({
   selector: 'app-auth',
@@ -20,12 +21,11 @@ export class AuthComponent {
   ) {}
 
   createAccount(signupData: SignupData) {
-    console.log(signupData);
     this.authenticationService
       .signup(signupData)
       .pipe(
         tap(() => {
-          this.router.navigate(['dashboard']);
+          this.navigateToDashboardPage();
         }),
         catchError((error) => {
           console.error(error);
@@ -42,7 +42,7 @@ export class AuthComponent {
       .login(loginData)
       .pipe(
         tap(() => {
-          this.router.navigate(['dashboard']);
+          this.navigateToDashboardPage();
         }),
         catchError((error) => {
           console.error(error);
@@ -52,5 +52,9 @@ export class AuthComponent {
         })
       )
       .subscribe();
+  }
+
+  navigateToDashboardPage(): void {
+    this.router.navigate([AppRoutes.Dashboard]);
   }
 }

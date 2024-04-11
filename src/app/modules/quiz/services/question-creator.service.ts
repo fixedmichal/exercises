@@ -12,19 +12,21 @@ import { Question } from '../models/question.class';
 
 @Injectable({ providedIn: 'root' })
 export class QuestionCreatorService {
+  // TODO: think. maybe it doesnt have to be a service?
   readonly tileImagePathBase = '/assets/images/hiragana/';
 
   createQuiz(): Question[] {
     return [
+      new Question(FourTilesQuestionComponent, this.createFourTilesOneAnswerQuestionData()),
+      new Question(FourTilesQuestionComponent, this.createFourTilesOneAnswerQuestionData()),
+      new Question(FourTilesQuestionComponent, this.createFourTilesOneAnswerQuestionData()),
       new Question(WriteRomajiQuestionComponent, this.createWriteRomajiQuestionData()),
       new Question(FourTilesQuestionComponent, this.createFourTilesOneAnswerQuestionData()),
+      new Question(FourTilesQuestionComponent, this.createFourTilesOneAnswerQuestionData()),
       new Question(WriteRomajiQuestionComponent, this.createWriteRomajiQuestionData()),
       new Question(FourTilesQuestionComponent, this.createFourTilesOneAnswerQuestionData()),
       new Question(FourTilesQuestionComponent, this.createFourTilesOneAnswerQuestionData()),
-      new Question(FourTilesQuestionComponent, this.createFourTilesOneAnswerQuestionData()),
-      new Question(FourTilesQuestionComponent, this.createFourTilesOneAnswerQuestionData()),
-      new Question(FourTilesQuestionComponent, this.createFourTilesOneAnswerQuestionData()),
-      // new Question(WriteRomajiGameComponent, this.createWriteRomajiQuestionData()),
+      new Question(WriteRomajiQuestionComponent, this.createWriteRomajiQuestionData()),
     ];
   }
 
@@ -42,6 +44,7 @@ export class QuestionCreatorService {
       const imagePath = `${this.tileImagePathBase}${answerData.romaji}.png`;
 
       return Builder<AnswerTile>()
+        .value(answerData.romaji)
         .imagePath(imagePath)
         .isSelected(false)
         .isColoredGreen(false)

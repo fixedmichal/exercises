@@ -1,5 +1,6 @@
 <div class="quiz-container">
   <section class="quiz-container__content">
+    <app-quiz-score *ngIf="quizScore$ | async as quizScore" [quizScore]="quizScore" />
     <!-- <mat-progress-bar
       mode="determinate"
       bufferValue
@@ -15,7 +16,7 @@
       'quiz-container__footer--highlighted-green': isAnsweredCorrectly,
       'quiz-container__footer--highlighted-red': isAnsweredCorrectly === false,
     }">
-    <button mat-raised-button color="warn" class="continue-button" (click)="onContinueClick()">Skip</button>
+    <button mat-raised-button class="continue-button" (click)="onContinueFirstClick()">Skip</button>
 
     <app-answer-feedback
       [answerResultFourTiles]="answerResultFourTiles"
@@ -27,7 +28,7 @@
         [disabled]="isContinueButtonDisabled$ | async"
         color="accent"
         class="continue-button"
-        (click)="onContinueClick()"
+        (click)="onContinueFirstClick()"
         >Continue</button
       >
     </ng-container>

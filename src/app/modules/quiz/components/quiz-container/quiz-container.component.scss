@@ -13,7 +13,7 @@
     min-height: 400px;
     margin: 0 auto;
     text-align: center;
-    border: 1px solid red;
+    // border: 1px solid red;
   }
 
   &__footer {
@@ -29,7 +29,8 @@
 
       // background-color: rgba(7, 149, 66, 0.42156862745098039);
       // background-color: #1cb068;
-      background-color: rgba(105, 240, 174, 1.5);
+      // background-color: rgba(105, 240, 174, 1);
+      background-color: #4caf50;
       border: 1px 0 1px 0 solid rgba(36, 241, 6, 0.9);
     }
 
