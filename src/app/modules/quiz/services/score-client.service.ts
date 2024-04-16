@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Firestore, collection, doc, getDoc, setDoc, updateDoc } from '@angular/fire/firestore';
 import { Observable, from, map, of, tap } from 'rxjs';
 import { StorageHelper } from 'src/app/shared/services/storage/storage-helper.util';
-import { JapaneseScript } from '../models/japanese-script';
+import { JapaneseScript } from '../../../shared/models/japanese-script';
 import { Score } from '../models/score.type';
 import { KanasScores } from '../models/kana-score.type';
 import { kanaScoreConverter, playerScoreConverter } from '../utils/firestore-converters.utils';

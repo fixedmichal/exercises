@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, ReplaySubject, Subject, finalize, first, map, scan, take, takeUntil, tap } from 'rxjs';
+import { Observable, ReplaySubject, Subject, first, map, scan, take, tap } from 'rxjs';
 import { Question } from '../models/question.class';
 import {
   FourTilesQuestionResultData,
@@ -29,7 +29,7 @@ export class QuizControllerService {
     return this.quizScoreService.quizScore$;
   }
 
-  get kanaScores$(): Observable<KanasScoresAggregator> {
+  get quizKanasScores$(): Observable<KanasScoresAggregator> {
     return this.quizScoreService.quizKanaScores$;
   }
 
@@ -91,16 +91,15 @@ export class QuizControllerService {
     );
   }
 
-  updateScores(): void {
-    this.quizScoreService.updatePlayerTotalKanasScores();
-    this.quizScoreService.updatePlayerTotalQuestionsScore();
+  updateScoresInDatabase(): void {
+    this.quizScoreService.updatePlayerTotalKanasScoresInDatabase();
+    this.quizScoreService.updatePlayerTotalQuestionsScoreInDatabase();
   }
 
   private setupQuizQuestionsStream(): Observable<void> {
     return this.goToNextQuestion$$.pipe(
       scan((acc: number) => acc + 1, -1),
       tap((counter) => {
-        console.log('counter', counter);
         if (counter === this.quizConfiguration.length) {
           this.router.navigate(['/quiz/results']);
         }
@@ -111,11 +110,6 @@ export class QuizControllerService {
         }
 
         return;
-      }),
-      finalize(() => {
-        console.log('FINALIZEFINALIZEFINALIZEFINALIZEFINALIZEFINALIZEFINALIZEFINALIZEFINALIZE');
-        this.quizScoreService.quizScore$.pipe(first(), tap(console.log)).subscribe(); //TODO: delete this line
-        this.quizScoreService.quizKanaScores$.pipe(first(), tap(console.log)).subscribe();
       }),
       take(this.quizConfiguration.length + 1)
     );

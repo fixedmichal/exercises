@@ -1,6 +1,6 @@
 export type HiraganaWord = {
-  hiragana: string;
-  romaji: string;
-  dividedRomaji: string;
-  englishTranslation: string;
+  readonly hiragana: string;
+  readonly romaji: string;
+  readonly dividedRomaji: string;
+  readonly englishTranslation: string;
 };

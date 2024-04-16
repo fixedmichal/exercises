@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { QuizControllerService } from '../../services/quiz-controller.service';
-import { map } from 'rxjs';
+import { map, tap } from 'rxjs';
+import { kanjiNumbers } from 'src/app/shared/constants/kanji-numbers.constants';
 
 @Component({
   selector: 'app-quiz-results',
@@ -9,17 +10,20 @@ import { map } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QuizResultsComponent implements OnInit {
-  readonly kanjiNumbers = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
+  kanjiNumbers = kanjiNumbers;
   quizScore$ = this.quizControllerService.quizScore$;
-  kanaScores$ = this.quizControllerService.kanaScores$.pipe(map((kanaScores) => kanaScores.scores));
+  kanaScores$ = this.quizControllerService.quizKanasScores$.pipe(
+    // map(() => new KanasScoresAggregator({ ki: { correctAnswersCount: 1, attemptsCount: 2 } })),
+    tap((kanaScores) => kanaScores.generateKanasSymbols()),
+    map((kanaScores) => kanaScores.scores)
+  );
 
   constructor(private quizControllerService: QuizControllerService) {}
 
   ngOnInit(): void {
     if (this.quizControllerService.isQuizInProgress) {
-      console.log('UPDATE SCORES');
       // TODO: add some spinner!
-      this.quizControllerService.updateScores();
+      this.quizControllerService.updateScoresInDatabase();
       this.quizControllerService.isQuizInProgress = false;
     }
   }

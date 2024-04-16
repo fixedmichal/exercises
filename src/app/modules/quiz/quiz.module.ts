@@ -9,6 +9,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { QuizRoutingModule } from './quiz-routing.module';
 import { QuizScoreComponent } from './components/quiz-score/quiz-score.component';
 import { QuizResultsComponent } from './components/quiz-results/quiz-results.component';
+import { WriteRomajiAnswerFeedbackComponent } from './components/answer-feedback/write-romaji/write-romaji-answer-feedback.component';
+import { KanaListComponent } from './components/kana-list/kana-list.component';
 
 @NgModule({
   declarations: [
@@ -17,8 +19,10 @@ import { QuizResultsComponent } from './components/quiz-results/quiz-results.com
     WriteRomajiQuestionComponent,
     AnswerTileComponent,
     AnswerFeedbackComponent,
+    WriteRomajiAnswerFeedbackComponent,
     QuizScoreComponent,
     QuizResultsComponent,
+    KanaListComponent,
   ],
   imports: [CommonModule, SharedModule, QuizRoutingModule],
 })

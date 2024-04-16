@@ -1,12 +1,7 @@
 <div class="quiz-container">
   <section class="quiz-container__content">
     <app-quiz-score *ngIf="quizScore$ | async as quizScore" [quizScore]="quizScore" />
-    <!-- <mat-progress-bar
-      mode="determinate"
-      bufferValue
-      [value]="counter$ | async"
-      color="warn"
-      class="question-time-counter"></mat-progress-bar> -->
+
     <ng-template appContentProjection />
   </section>
 
@@ -18,9 +13,7 @@
     }">
     <button mat-raised-button class="continue-button" (click)="onContinueFirstClick()">Skip</button>
 
-    <app-answer-feedback
-      [answerResultFourTiles]="answerResultFourTiles"
-      [answerResultWriteRomaji]="answerResultWriteRomaji" />
+    <app-answer-feedback [answerResult]="answerResult" />
 
     <ng-container *ngIf="!isAnswerConfirmed; else answerConfirmed">
       <button

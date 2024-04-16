@@ -1,0 +1,9 @@
+<div class="kanas-list">
+  <div class="kanas-list__item" *ngFor="let kanaScore of kanasScores | keyvalue">
+    <div class="kanas-list__item__key">{{ kanaScore.value.kanaSymbol }}</div>
+    <div class="kanas-list__item__values">
+      <p class="kanas-list__item__values__correct-answers-count">{{ kanaScore.value.correctAnswersCount }}</p>
+      <p class="kanas-list__item__values__attempts-count">{{ kanaScore.value.attemptsCount }}</p>
+    </div>
+  </div>
+</div>

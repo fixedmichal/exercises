@@ -1,6 +1,6 @@
 import { HiraganaWord } from '../models/hiragana-word.type';
 
-export const hiraganaWords: HiraganaWord[] = [
+export const hiraganaWords: Readonly<HiraganaWord[]> = [
   { hiragana: 'あお', romaji: 'ao', englishTranslation: 'blue', dividedRomaji: 'a-o' },
   { hiragana: 'いぬ', romaji: 'inu', englishTranslation: 'dog', dividedRomaji: 'i-nu' },
   // { hiragana: 'うさぎ', romaji: 'usagi', englishTranslation: 'rabbit', dividedRomaji: 'u-sa-gi' },
@@ -80,4 +80,4 @@ export const hiraganaWords: HiraganaWord[] = [
   { hiragana: 'ようちえん', romaji: 'youchien', englishTranslation: 'kindergarten', dividedRomaji: 'yo-u-chi-e-n' },
   // { hiragana: 'らっぱ', romaji: 'rappa', englishTranslation: 'trumpet', dividedRomaji: 'ra-ppa' },
   // { hiragana: 'りんじん', romaji: 'rinjin', englishTranslation: 'neighbor', dividedRomaji: 'ri-n-ji-n' },
-];
+] as const;

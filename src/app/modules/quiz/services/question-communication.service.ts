@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, distinctUntilChanged, tap } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, distinctUntilChanged } from 'rxjs';
 import {
   FourTilesQuestionResultData,
   WriteRomajiQuestionResultData,

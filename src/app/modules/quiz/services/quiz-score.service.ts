@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, filter, first, mergeMap, tap } from 'rxjs';
 import { QuizQuestionsScore } from '../models/quiz-score.class';
-import { JapaneseScript } from '../models/japanese-script';
+import { JapaneseScript } from '../../../shared/models/japanese-script';
 import { QuestionScore } from '../models/question-score.enum';
 import { KanasScoresAggregator } from '../models/kana-scores.class';
 import { QuizScoreClientService } from './score-client.service';
@@ -24,11 +24,7 @@ export class QuizScoreService {
     return this.quizKanasScores$$.asObservable();
   }
 
-  constructor(private quizScoreClientService: QuizScoreClientService) {
-    this.quizQuestionsScore$$.subscribe((quizScore) => {
-      console.log('Quiz score ', quizScore);
-    });
-  }
+  constructor(private quizScoreClientService: QuizScoreClientService) {}
 
   rateQuestion(score: QuestionScore): void {
     this.quizQuestionsScore$$.value.rateQuestion(score);
@@ -36,7 +32,6 @@ export class QuizScoreService {
   }
 
   changeKanaScore(kana: string, score: QuestionScore): void {
-    console.log(kana, score);
     this.quizKanasScores$$.value.changeScore(kana, score);
   }
 
@@ -73,15 +68,16 @@ export class QuizScoreService {
       .subscribe();
   }
 
-  updatePlayerTotalKanasScores(): void {
+  updatePlayerTotalKanasScoresInDatabase(): void {
     const updatedPlayerKanaScores = this.mergeTotalAndCurrentPlayerKanasScores(
       this.playerTotalKanaScores$$.value,
       this.quizKanasScores$$.value.scores
     );
+
     this.quizScoreClientService.updateKanaScore(updatedPlayerKanaScores, JapaneseScript.Hiragana);
   }
 
-  updatePlayerTotalQuestionsScore(): void {
+  updatePlayerTotalQuestionsScoreInDatabase(): void {
     const updatedCorrectAnswersCount =
       this.quizQuestionsScore$$.value.correctAnswersCount + this.playerTotalQuestionsScore$$.value.correctAnswersCount;
     const updatedAttemptsCount =
@@ -95,34 +91,31 @@ export class QuizScoreService {
       .subscribe();
   }
 
-  mergeTotalAndCurrentPlayerKanasScores(playerKanaScores: KanasScores, quizKanasScores: KanasScores): KanasScores {
-    let playerKanaScoresMap = new Map(Object.entries(playerKanaScores));
-    let quizKanaScoresMap = new Map(Object.entries(quizKanasScores));
+  private mergeTotalAndCurrentPlayerKanasScores(
+    playerKanaScores: KanasScores,
+    quizKanasScores: KanasScores
+  ): KanasScores {
+    const updatedPlayerKanaScores: KanasScores = {};
 
-    let updatedPlayerKanaScores: KanasScores = {};
+    for (const [kana, playerKanaScore] of Object.entries(playerKanaScores)) {
+      const quizKanaScore = quizKanasScores[kana];
 
-    playerKanaScoresMap.forEach((playerKanaScore, kana) => {
-      if (quizKanaScoresMap.has(kana)) {
-        const quizKanaScore = quizKanaScoresMap.get(kana);
-
-        const updatedAttemptsCount = playerKanaScore.attemptsCount + (quizKanaScore?.attemptsCount ?? 0);
-        const updatedCorrectAnswersCount =
-          playerKanaScore.correctAnswersCount + (quizKanaScore?.correctAnswersCount ?? 0);
+      if (quizKanaScore) {
+        const updatedAttemptsCount = playerKanaScore.attemptsCount + quizKanaScore.attemptsCount;
+        const updatedCorrectAnswersCount = playerKanaScore.correctAnswersCount + quizKanaScore.correctAnswersCount;
 
         updatedPlayerKanaScores[kana] = {
           attemptsCount: updatedAttemptsCount,
           correctAnswersCount: updatedCorrectAnswersCount,
         };
-      } else {
-        updatedPlayerKanaScores[kana] = playerKanaScore;
       }
-    });
+    }
 
-    quizKanaScoresMap.forEach((quizKanaScore, kana) => {
-      if (!playerKanaScoresMap.has(kana)) {
+    for (const [kana, quizKanaScore] of Object.entries(quizKanasScores)) {
+      if (!playerKanaScores.hasOwnProperty(kana)) {
         updatedPlayerKanaScores[kana] = quizKanaScore;
       }
-    });
+    }
 
     return updatedPlayerKanaScores;
   }

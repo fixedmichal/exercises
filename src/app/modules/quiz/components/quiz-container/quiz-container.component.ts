@@ -8,14 +8,13 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { Subject, filter, finalize, map, of, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs';
+import { Subject, filter, finalize, map, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs';
 import { QuestionCommunicationService } from '../../services/question-communication.service';
 import { QuizControllerService } from '../../services/quiz-controller.service';
 import {
   FourTilesQuestionResultData,
   WriteRomajiQuestionResultData,
 } from 'src/app/shared/models/question-answer-result-data.type';
-import { QuestionType } from 'src/app/shared/models/question-type.enum';
 import { ContentProjectionDirective } from 'src/app/shared/directives/content-projection.directive';
 
 @Component({
@@ -29,14 +28,8 @@ export class QuizContainerComponent implements OnInit, DoCheck, OnDestroy {
   private enterKeydown$ = new Subject<void>();
   private componentDestroyed$ = new Subject<void>();
 
-  // unused so far
-  counter$ = of(100);
-
-  quizScore$ = this.quizControllerService.quizScore$.pipe(tap((x) => console.log('>>>>>>>>>>>>>> EMIT QUIZSCORE$', x)));
-
-  answerResultWriteRomaji: WriteRomajiQuestionResultData | null; // there will be more and more of this
-  answerResultFourTiles: FourTilesQuestionResultData | null;
-
+  quizScore$ = this.quizControllerService.quizScore$;
+  answerResult: WriteRomajiQuestionResultData | FourTilesQuestionResultData | null;
   isAnswerConfirmed = false;
   isAnsweredCorrectly: boolean | null;
 
@@ -107,15 +100,13 @@ export class QuizContainerComponent implements OnInit, DoCheck, OnDestroy {
   private setupFourTilesQuestionAnsweredCallback(): void {
     this.questionCommunicationService.fourTilesQuestionAnswered$
       .pipe(
-        switchMap((answerResult) => this.quizControllerService.checkIfIsAnswerCorrect(answerResult)),
+        switchMap((answer) => this.quizControllerService.checkIfIsAnswerCorrect(answer)),
         tap((answerResult) => {
-          if (answerResult.questionType === QuestionType.FourTiles) {
-            this.isAnswerConfirmed = true;
-            this.answerResultFourTiles = answerResult;
+          this.isAnswerConfirmed = true;
+          this.answerResult = answerResult;
 
-            this.isAnsweredCorrectly = answerResult.isAnsweredCorrectly;
-            this.questionCommunicationService.sendAnswerAssessedFourTiles(answerResult);
-          }
+          this.isAnsweredCorrectly = answerResult.isAnsweredCorrectly;
+          this.questionCommunicationService.sendAnswerAssessedFourTiles(answerResult);
         }),
         takeUntil(this.componentDestroyed$)
       )
@@ -127,17 +118,10 @@ export class QuizContainerComponent implements OnInit, DoCheck, OnDestroy {
       .pipe(
         switchMap((answerText) => this.quizControllerService.checkIfIsAnswerCorrect(answerText)),
         tap((answerResult) => {
-          if (answerResult.questionType === QuestionType.WriteRomaji) {
-            this.isAnswerConfirmed = true;
-            this.answerResultWriteRomaji = answerResult;
-            console.log(answerResult);
-
-            this.isAnsweredCorrectly = answerResult.isAnsweredCorrectly;
-            this.cdr.markForCheck();
-
-            // TODO: It is probably not necessary?
-            this.questionCommunicationService.sendAnswerAssessedWriteRomaji(answerResult);
-          }
+          this.isAnswerConfirmed = true;
+          this.answerResult = answerResult;
+          this.isAnsweredCorrectly = answerResult.isAnsweredCorrectly;
+          this.cdr.markForCheck();
         }),
         takeUntil(this.componentDestroyed$)
       )
@@ -160,8 +144,7 @@ export class QuizContainerComponent implements OnInit, DoCheck, OnDestroy {
   }
 
   private cleanupAnswerDataFields(): void {
-    this.answerResultWriteRomaji = null;
-    this.answerResultFourTiles = null;
+    this.answerResult = null;
     this.isAnsweredCorrectly = null;
 
     this.isAnswerConfirmed = false;

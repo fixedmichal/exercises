@@ -6,11 +6,21 @@ import {
 
 @Component({
   selector: 'app-answer-feedback',
-  templateUrl: './answer-feedback.component.html',
+  template: `
+    <article *ngIf="answerResult" class="answer-feedback">
+      <h1 class="answer-feedback__main-header">{{ answerResult.isAnsweredCorrectly ? 'Correct' : 'Wrong' }}!</h1>
+      <app-write-romaji-answer-feedback *ngIf="isAnswerResultWriteRomaji(answerResult)" [answerResult]="answerResult" />
+    </article>
+  `,
   styleUrls: ['./answer-feedback.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AnswerFeedbackComponent {
-  @Input() answerResultWriteRomaji: WriteRomajiQuestionResultData | null;
-  @Input() answerResultFourTiles: FourTilesQuestionResultData | null;
+  @Input() answerResult: FourTilesQuestionResultData | WriteRomajiQuestionResultData | null;
+
+  isAnswerResultWriteRomaji(
+    answerResult: FourTilesQuestionResultData | WriteRomajiQuestionResultData | null
+  ): answerResult is WriteRomajiQuestionResultData {
+    return answerResult?.questionType === 'writeRomaji';
+  }
 }

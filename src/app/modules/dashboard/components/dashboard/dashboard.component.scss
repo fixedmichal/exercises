@@ -1,46 +1,58 @@
 @import './../../../../../styles/variables.scss';
 
-.dashboard-menu-container {
+.dashboard {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  height: 90vh;
-}
+  gap: 2rem;
 
-.dashboard-menu {
-  display: grid;
-  grid-template-columns: 15rem 15rem;
-  grid-template-rows: 15rem 15rem;
-  gap: 4px;
-
-  transition: gap 0.5s ease-out;
-}
-
-.dashboard-menu-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:nth-of-type(1) {
-    background-color: #ca1551;
-  }
-
-  &:nth-of-type(2) {
-    background-color: #eac435;
-  }
-
-  &:nth-of-type(3) {
-    background-color: #eac435;
-  }
-
-  &:nth-of-type(4) {
-    background-color: #ca1551;
-  }
-
-  &:hover {
-    // -webkit-filter: invert(80%);
-    background-color: $app-bg-color;
+  &__header {
+    font-size: 2.5rem;
     color: white;
-    cursor: pointer;
+  }
+  &__menu {
+    display: grid;
+    grid-template-columns: 15rem 15rem;
+    grid-template-rows: 15rem 15rem;
+    gap: 4px;
+
+    transition: gap 0.5s ease-out;
+
+    &__item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:nth-of-type(1) {
+        background-color: #623cea;
+      }
+
+      &:nth-of-type(2) {
+        background-color: #623cea;
+      }
+
+      &:nth-of-type(3) {
+        background-color: #ffadad;
+      }
+
+      &:nth-of-type(4) {
+        background-color: #ffadad;
+      }
+
+      &:hover {
+        cursor: pointer;
+        animation-name: change-color;
+        animation-duration: 0.6s;
+        animation-iteration-count: 1;
+        animation-fill-mode: forwards;
+      }
+    }
+  }
+}
+
+@keyframes change-color {
+  to {
+    color: white;
+    background-color: #d80032;
   }
 }

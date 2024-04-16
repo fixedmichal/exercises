@@ -1,3 +1,5 @@
+@import './../../../../../styles/variables.scss';
+
 .quiz-score {
   display: flex;
   justify-content: center;
@@ -10,8 +12,12 @@
     border-radius: 50%;
     background-color: #9d91a3;
 
+    &--current {
+      background-color: $beatiful-yellow;
+    }
+
     &--correct {
-      background-color: #4caf50;
+      background-color: #0cce6b;
     }
 
     &--incorrect {

@@ -1,10 +1,10 @@
 export type HiraganaSyllable = {
-  symbol: string;
-  romaji: string;
-  alternativeRomaji?: string;
+  readonly symbol: string;
+  readonly romaji: string;
+  readonly alternativeRomaji?: string;
 };
 
-export const hiraganaSyllables: HiraganaSyllable[] = [
+export const hiraganaSyllables: Readonly<HiraganaSyllable[]> = [
   {
     symbol: 'あ',
     romaji: 'a',
@@ -191,7 +191,7 @@ export const hiraganaSyllables: HiraganaSyllable[] = [
     symbol: 'ん',
     romaji: 'n',
   },
-];
+] as const;
 
 // {
 //   sign: "が",
