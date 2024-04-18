@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, ReplaySubject, Subject, first, map, scan, take, tap } from 'rxjs';
+import { Observable, ReplaySubject, Subject, concatMap, first, map, of, scan, take, tap } from 'rxjs';
 import { Question } from '../models/question.class';
 import {
   FourTilesQuestionResultData,
@@ -26,11 +26,11 @@ export class QuizControllerService {
   }
 
   get quizScore$(): Observable<QuizQuestionsScore> {
-    return this.quizScoreService.quizScore$;
+    return this.quizScoreService.currentQuizQuestionsScore$;
   }
 
-  get quizKanasScores$(): Observable<KanasScoresAggregator> {
-    return this.quizScoreService.quizKanaScores$;
+  get currentQuizKanasScores$(): Observable<KanasScoresAggregator> {
+    return this.quizScoreService.currentQuizKanasScores$;
   }
 
   constructor(
@@ -40,16 +40,14 @@ export class QuizControllerService {
   ) {}
 
   setupQuizAndGetPlayerScores(): Observable<void> {
-    this.quizScoreService.cleanupScore();
+    this.quizScoreService.cleanupAllScores();
     this.quizConfiguration = this.questionCreaterService.createQuiz();
+    this.isQuizInProgress = true;
 
-    return this.setupQuizQuestionsStream().pipe(
-      tap(() => {
-        this.isQuizInProgress = true;
-        this.quizScoreService.fetchPlayerTotalKanasScores();
-        this.quizScoreService.fetchPlayerTotalQuestionsScore();
-      })
-    );
+    this.quizScoreService.fetchPlayerTotalKanasScores();
+    this.quizScoreService.fetchPlayerTotalQuestionsScore();
+
+    return this.setupQuizQuestionsStream();
   }
 
   sendGoToNextQuestion(): void {

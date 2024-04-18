@@ -10,34 +10,44 @@ import { KanasScores } from '../models/kana-score.type';
 
 @Injectable({ providedIn: 'root' })
 export class QuizScoreService {
-  private quizQuestionsScore$$ = new BehaviorSubject<QuizQuestionsScore>(new QuizQuestionsScore(10, 0));
-  private quizKanasScores$$ = new BehaviorSubject<KanasScoresAggregator>(new KanasScoresAggregator());
+  private currentQuizQuestionsScore$$ = new BehaviorSubject<QuizQuestionsScore>(new QuizQuestionsScore(10, 0));
+  private currentQuizKanasScores$$ = new BehaviorSubject<KanasScoresAggregator>(new KanasScoresAggregator());
 
-  private playerTotalKanaScores$$ = new BehaviorSubject<KanasScores>({});
+  private playerTotalKanasScores$$ = new BehaviorSubject<KanasScores>({});
   private playerTotalQuestionsScore$$ = new BehaviorSubject<Score>({ correctAnswersCount: 0, attemptsCount: 0 });
 
-  get quizScore$(): Observable<QuizQuestionsScore> {
-    return this.quizQuestionsScore$$.asObservable();
+  get currentQuizQuestionsScore$(): Observable<QuizQuestionsScore> {
+    return this.currentQuizQuestionsScore$$.asObservable();
   }
 
-  get quizKanaScores$(): Observable<KanasScoresAggregator> {
-    return this.quizKanasScores$$.asObservable();
+  get currentQuizKanasScores$(): Observable<KanasScoresAggregator> {
+    return this.currentQuizKanasScores$$.asObservable();
+  }
+
+  get playerTotalKanasScores$(): Observable<KanasScores> {
+    return this.playerTotalKanasScores$$.asObservable();
+  }
+
+  get playerTotalQuestionsScore$(): Observable<Score> {
+    return this.playerTotalQuestionsScore$$.asObservable();
   }
 
   constructor(private quizScoreClientService: QuizScoreClientService) {}
 
   rateQuestion(score: QuestionScore): void {
-    this.quizQuestionsScore$$.value.rateQuestion(score);
-    this.quizQuestionsScore$$.next(this.quizQuestionsScore$$.value.clone());
+    this.currentQuizQuestionsScore$$.value.rateQuestion(score);
+    this.currentQuizQuestionsScore$$.next(this.currentQuizQuestionsScore$$.value.clone());
   }
 
   changeKanaScore(kana: string, score: QuestionScore): void {
-    this.quizKanasScores$$.value.changeScore(kana, score);
+    this.currentQuizKanasScores$$.value.changeScore(kana, score);
   }
 
-  cleanupScore(): void {
-    this.quizQuestionsScore$$.next(new QuizQuestionsScore(10, 0));
-    this.quizKanasScores$$.next(new KanasScoresAggregator());
+  cleanupAllScores(): void {
+    this.currentQuizQuestionsScore$$.next(new QuizQuestionsScore(10, 0));
+    this.currentQuizKanasScores$$.next(new KanasScoresAggregator());
+    this.playerTotalKanasScores$$.next({});
+    this.playerTotalQuestionsScore$$.next({ correctAnswersCount: 0, attemptsCount: 0 });
   }
 
   fetchPlayerTotalKanasScores(): void {
@@ -47,7 +57,8 @@ export class QuizScoreService {
         filter((data) => !!data),
         tap((playerKanaScores) => {
           if (playerKanaScores) {
-            this.playerTotalKanaScores$$.next(playerKanaScores);
+            console.log('playerKanaScores: ', playerKanaScores);
+            this.playerTotalKanasScores$$.next(playerKanaScores);
           }
         })
       )
@@ -70,18 +81,22 @@ export class QuizScoreService {
 
   updatePlayerTotalKanasScoresInDatabase(): void {
     const updatedPlayerKanaScores = this.mergeTotalAndCurrentPlayerKanasScores(
-      this.playerTotalKanaScores$$.value,
-      this.quizKanasScores$$.value.scores
+      this.playerTotalKanasScores$$.value,
+      this.currentQuizKanasScores$$.value.scores
     );
+    console.log('playerTotalKanaScores: ', this.playerTotalKanasScores$$.value);
+    console.log('currentQuizKanasScores', this.currentQuizKanasScores$$.value.scores);
+    console.log('updatedPlayerKanaScores', updatedPlayerKanaScores);
 
     this.quizScoreClientService.updateKanaScore(updatedPlayerKanaScores, JapaneseScript.Hiragana);
   }
 
   updatePlayerTotalQuestionsScoreInDatabase(): void {
     const updatedCorrectAnswersCount =
-      this.quizQuestionsScore$$.value.correctAnswersCount + this.playerTotalQuestionsScore$$.value.correctAnswersCount;
+      this.currentQuizQuestionsScore$$.value.correctAnswersCount +
+      this.playerTotalQuestionsScore$$.value.correctAnswersCount;
     const updatedAttemptsCount =
-      this.quizQuestionsScore$$.value.questionsCount + this.playerTotalQuestionsScore$$.value.attemptsCount;
+      this.currentQuizQuestionsScore$$.value.questionsCount + this.playerTotalQuestionsScore$$.value.attemptsCount;
 
     this.quizScoreClientService
       .updatePlayerScore({
@@ -92,27 +107,29 @@ export class QuizScoreService {
   }
 
   private mergeTotalAndCurrentPlayerKanasScores(
-    playerKanaScores: KanasScores,
-    quizKanasScores: KanasScores
+    totalPlayerKanasScores: KanasScores,
+    currentQuizKanasScores: KanasScores
   ): KanasScores {
     const updatedPlayerKanaScores: KanasScores = {};
 
-    for (const [kana, playerKanaScore] of Object.entries(playerKanaScores)) {
-      const quizKanaScore = quizKanasScores[kana];
+    for (const [kana, playerKanasScore] of Object.entries(totalPlayerKanasScores)) {
+      const quizKanaScore = currentQuizKanasScores[kana];
 
       if (quizKanaScore) {
-        const updatedAttemptsCount = playerKanaScore.attemptsCount + quizKanaScore.attemptsCount;
-        const updatedCorrectAnswersCount = playerKanaScore.correctAnswersCount + quizKanaScore.correctAnswersCount;
+        const updatedAttemptsCount = playerKanasScore.attemptsCount + quizKanaScore.attemptsCount;
+        const updatedCorrectAnswersCount = playerKanasScore.correctAnswersCount + quizKanaScore.correctAnswersCount;
 
         updatedPlayerKanaScores[kana] = {
           attemptsCount: updatedAttemptsCount,
           correctAnswersCount: updatedCorrectAnswersCount,
         };
+      } else {
+        updatedPlayerKanaScores[kana] = playerKanasScore;
       }
     }
 
-    for (const [kana, quizKanaScore] of Object.entries(quizKanasScores)) {
-      if (!playerKanaScores.hasOwnProperty(kana)) {
+    for (const [kana, quizKanaScore] of Object.entries(currentQuizKanasScores)) {
+      if (!totalPlayerKanasScores.hasOwnProperty(kana)) {
         updatedPlayerKanaScores[kana] = quizKanaScore;
       }
     }

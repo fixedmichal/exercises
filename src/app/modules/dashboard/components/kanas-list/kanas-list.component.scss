@@ -1,0 +1,47 @@
+@import 'src/styles/variables.scss';
+
+.kanas-list {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-auto-flow: row;
+  justify-content: center;
+  gap: 0.5rem;
+  // &--2-rows {
+  //   grid-template-rows: repeat(2, 1fr);
+  //   grid-auto-flow: column;
+  // }
+
+  // &--many-rows {
+  //   grid-template-columns: repeat(6, 1fr);
+  //   grid-auto-flow: row;
+  // }
+
+  &__item {
+    display: grid;
+    width: 4rem;
+    height: 4rem;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+
+    color: black;
+    background-color: $beautiful-yellow;
+
+    &__symbol {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5rem;
+      grid-row: span 3;
+      grid-column: span 6;
+    }
+
+    &__romaji {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.9rem;
+      grid-row: span 2;
+      grid-column: span 6;
+    }
+  }
+}

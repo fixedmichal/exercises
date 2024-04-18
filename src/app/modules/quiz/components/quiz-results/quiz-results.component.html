@@ -11,10 +11,10 @@
   </div>
   <div class="quiz-results__kana-score">
     <h2 class="quiz-results__kana-score__header">kana</h2>
-    <app-kana-list [kanasScores]="kanaScores$ | async"></app-kana-list>
+    <app-kana-score-list [kanasScores]="kanaScores$ | async" rowsConfiguration="few" />
   </div>
   <div class="quiz-results__footer">
-    <button mat-raised-button class="continue-button" (click)="(null)">Back</button>
-    <button mat-raised-button class="continue-button" (click)="(null)">Repeat</button>
+    <button mat-raised-button class="continue-button" (click)="onBackClick()">Back</button>
+    <button mat-raised-button class="continue-button" (click)="onRepeatClick()">Repeat</button>
   </div>
 </div>

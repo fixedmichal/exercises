@@ -11,7 +11,7 @@
       'quiz-container__footer--highlighted-green': isAnsweredCorrectly,
       'quiz-container__footer--highlighted-red': isAnsweredCorrectly === false,
     }">
-    <button mat-raised-button class="continue-button" (click)="onContinueFirstClick()">Skip</button>
+    <button mat-raised-button class="continue-button" (click)="onCancelClick()">Back</button>
 
     <app-answer-feedback [answerResult]="answerResult" />
 

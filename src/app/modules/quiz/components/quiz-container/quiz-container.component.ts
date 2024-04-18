@@ -8,7 +8,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { Subject, filter, finalize, map, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs';
+import { Subject, filter, map, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs';
 import { QuestionCommunicationService } from '../../services/question-communication.service';
 import { QuizControllerService } from '../../services/quiz-controller.service';
 import {
@@ -16,6 +16,8 @@ import {
   WriteRomajiQuestionResultData,
 } from 'src/app/shared/models/question-answer-result-data.type';
 import { ContentProjectionDirective } from 'src/app/shared/directives/content-projection.directive';
+import { AppRoutes } from 'src/app/app-routes.enum';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-quiz-container',
@@ -23,20 +25,23 @@ import { ContentProjectionDirective } from 'src/app/shared/directives/content-pr
   styleUrls: ['./quiz-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class QuizContainerComponent implements OnInit, DoCheck, OnDestroy {
+export class QuizContainerComponent implements OnInit, OnDestroy {
   @ViewChild(ContentProjectionDirective, { static: true }) questionContentDirective: ContentProjectionDirective;
+
   private enterKeydown$ = new Subject<void>();
   private componentDestroyed$ = new Subject<void>();
 
   quizScore$ = this.quizControllerService.quizScore$;
   answerResult: WriteRomajiQuestionResultData | FourTilesQuestionResultData | null;
+
   isAnswerConfirmed = false;
-  isAnsweredCorrectly: boolean | null;
+  isAnsweredCorrectly: boolean | null = null;
 
   currentQuestion$ = this.quizControllerService.currentQuestion$;
   isContinueButtonDisabled$ = this.questionCommunicationService.isContinueButtonDisabled$;
 
   constructor(
+    private router: Router,
     private questionCommunicationService: QuestionCommunicationService,
     private quizControllerService: QuizControllerService,
     private cdr: ChangeDetectorRef
@@ -45,10 +50,6 @@ export class QuizContainerComponent implements OnInit, DoCheck, OnDestroy {
   @HostListener('document:keydown.enter')
   onEnterKeydownHandler() {
     this.enterKeydown$.next();
-  }
-
-  ngDoCheck(): void {
-    // console.log(this.isAnswerConfirmed);
   }
 
   ngOnDestroy(): void {
@@ -77,20 +78,21 @@ export class QuizContainerComponent implements OnInit, DoCheck, OnDestroy {
     this.quizControllerService.sendGoToNextQuestion();
   }
 
+  onCancelClick(): void {
+    this.router.navigate([AppRoutes.Dashboard]);
+  }
+
   private setupCurrentQuestionCallback(): void {
     this.currentQuestion$
       .pipe(
         map((question) => {
           this.cleanupAnswerDataFields();
-
           this.questionContentDirective.viewContainerRef.clear();
+
           let component = this.questionContentDirective.viewContainerRef.createComponent(question.component);
           component.setInput('questionData', question.data);
 
           this.questionCommunicationService.sendIsContinueButtonDisabled(true);
-        }),
-        finalize(() => {
-          console.log('FINALIZED setupCurrentQuestionCallback FINALIZED!!!!!!');
         }),
         takeUntil(this.componentDestroyed$)
       )

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { KanaListComponent } from './kana-list.component';
+import { HiraganaPageComponent } from './hiragana-page.component';
 
-describe('KanaListComponent', () => {
-  let component: KanaListComponent;
-  let fixture: ComponentFixture<KanaListComponent>;
+describe('HiraganaPageComponent', () => {
+  let component: HiraganaPageComponent;
+  let fixture: ComponentFixture<HiraganaPageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ KanaListComponent ]
+      declarations: [ HiraganaPageComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(KanaListComponent);
+    fixture = TestBed.createComponent(HiraganaPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

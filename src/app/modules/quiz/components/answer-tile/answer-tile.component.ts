@@ -9,8 +9,8 @@ import { AnswerTile } from '../../../../shared/models/answer-tile.interface';
 })
 export class AnswerTileComponent {
   @Input() index: number;
-
   @Input() answerTileConfig: AnswerTile;
+
   @Output() tileSelected = new EventEmitter<number>();
 
   onClick(): void {

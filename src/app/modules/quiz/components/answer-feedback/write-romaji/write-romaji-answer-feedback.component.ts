@@ -4,10 +4,10 @@ import { WriteRomajiQuestionResultData } from 'src/app/shared/models/question-an
 @Component({
   selector: 'app-write-romaji-answer-feedback',
   template: ` <h3 *ngIf="!answerResult?.isAnsweredCorrectly"
-      >Correct answer: {{ answerResult?.correctAnswerInRomaji }}</h3
+      >Correct answer is <i>"{{ answerResult?.correctAnswerInRomaji }}"</i>.</h3
     >
     <h4>
-      It means <i>"{{ answerResult?.wordEnglishTranslation }}"</i>
+      It means <i>"{{ answerResult?.wordEnglishTranslation }}".</i>
     </h4>`,
   styleUrls: ['./../answer-feedback.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

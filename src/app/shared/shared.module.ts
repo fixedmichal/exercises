@@ -12,10 +12,12 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ReactiveFormsModule } from '@angular/forms';
 import { A11yModule } from '@angular/cdk/a11y';
 import { ContentProjectionDirective } from './directives/content-projection.directive';
+import { KanaScoreListComponent } from './components/kana-list/kana-score-list.component';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
   providers: [],
-  declarations: [ContentProjectionDirective],
+  declarations: [ContentProjectionDirective, KanaScoreListComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -28,6 +30,7 @@ import { ContentProjectionDirective } from './directives/content-projection.dire
     MatButtonToggleModule,
     MatSnackBarModule,
     MatProgressBarModule,
+    MatTabsModule,
     A11yModule,
   ],
   exports: [
@@ -40,8 +43,10 @@ import { ContentProjectionDirective } from './directives/content-projection.dire
     MatCardModule,
     MatSnackBarModule,
     MatProgressBarModule,
+    MatTabsModule,
     A11yModule,
     ContentProjectionDirective,
+    KanaScoreListComponent,
   ],
 })
 export class SharedModule {}

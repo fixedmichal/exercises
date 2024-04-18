@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { EMPTY, catchError, startWith, tap } from 'rxjs';
+import { EMPTY, catchError, shareReplay, startWith, tap } from 'rxjs';
 import { AppRoutes } from 'src/app/app-routes.enum';
 import { AuthenticationService } from 'src/app/modules/auth/services/authentication.service';
 import { NotificationService } from 'src/app/shared/services/storage/notification.service';
@@ -18,10 +18,10 @@ export class HeaderComponent {
     private notificationService: NotificationService
   ) {}
 
-  isUserLoggedIn$ = this.authenticationService.isUserLoggedIn$.pipe(startWith(undefined));
+  isUserLoggedIn$ = this.authenticationService.isUserLoggedIn$.pipe(startWith(undefined), shareReplay(1));
 
   onLoginClick(): void {
-    this.navigateToAuth();
+    this.navigateToAuthPage();
   }
 
   onLogoutClick(): void {
@@ -29,7 +29,7 @@ export class HeaderComponent {
       .logout()
       .pipe(
         tap(() => {
-          this.navigateToAuth();
+          this.navigateToAuthPage();
         }),
         catchError((error) => {
           console.error(error);
@@ -41,7 +41,7 @@ export class HeaderComponent {
       .subscribe();
   }
 
-  navigateToAuth(): void {
+  navigateToAuthPage(): void {
     this.router.navigate([AppRoutes.Auth]);
   }
 }

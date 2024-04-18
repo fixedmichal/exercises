@@ -1,0 +1,54 @@
+@import 'src/styles/variables.scss';
+
+:host {
+  align-self: flex-start;
+}
+
+.player-statistics {
+  display: flex;
+  gap: 7rem;
+  margin-top: 2rem;
+  color: white;
+
+  &__questions-score {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    max-height: 93vh;
+    font-size: 1.5rem;
+
+    &__values-container {
+      display: flex;
+      height: 85%;
+    }
+
+    &__values {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3rem;
+
+      &__item {
+        font-size: 6rem;
+        font-weight: bold;
+        color: $beautiful-yellow;
+      }
+    }
+  }
+
+  &__kana-scores {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    font-size: 1.5rem;
+
+    &__tabs {
+      &__item {
+        padding-top: 1rem;
+      }
+    }
+  }
+}

@@ -7,6 +7,7 @@
   align-items: center;
   gap: 3rem;
   height: 100%;
+  text-align: center;
 
   &__content {
     display: flex;
@@ -16,7 +17,7 @@
 
     &__kana-word {
       padding: 2rem 2rem;
-      background-color: $beatiful-yellow;
+      background-color: $beautiful-yellow;
 
       &__kana-image {
         height: 5rem;

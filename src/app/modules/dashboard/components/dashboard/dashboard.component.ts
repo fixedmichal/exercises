@@ -11,7 +11,7 @@ import { AppRoutes } from 'src/app/app-routes.enum';
 export class DashboardComponent {
   constructor(private router: Router) {}
 
-  goToLearnHiraganaPage(): void {
-    this.router.navigate([AppRoutes.Quiz]);
+  goToHiraganaPage(): void {
+    this.router.navigate([AppRoutes.Hiragana]);
   }
 }

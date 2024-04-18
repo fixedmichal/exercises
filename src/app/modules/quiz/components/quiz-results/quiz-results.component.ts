@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { QuizControllerService } from '../../services/quiz-controller.service';
 import { map, tap } from 'rxjs';
 import { kanjiNumbers } from 'src/app/shared/constants/kanji-numbers.constants';
+import { Router } from '@angular/router';
+import { AppRoutes } from 'src/app/app-routes.enum';
 
 @Component({
   selector: 'app-quiz-results',
@@ -12,13 +14,13 @@ import { kanjiNumbers } from 'src/app/shared/constants/kanji-numbers.constants';
 export class QuizResultsComponent implements OnInit {
   kanjiNumbers = kanjiNumbers;
   quizScore$ = this.quizControllerService.quizScore$;
-  kanaScores$ = this.quizControllerService.quizKanasScores$.pipe(
+  kanaScores$ = this.quizControllerService.currentQuizKanasScores$.pipe(
     // map(() => new KanasScoresAggregator({ ki: { correctAnswersCount: 1, attemptsCount: 2 } })),
     tap((kanaScores) => kanaScores.generateKanasSymbols()),
     map((kanaScores) => kanaScores.scores)
   );
 
-  constructor(private quizControllerService: QuizControllerService) {}
+  constructor(private router: Router, private quizControllerService: QuizControllerService) {}
 
   ngOnInit(): void {
     if (this.quizControllerService.isQuizInProgress) {
@@ -28,7 +30,11 @@ export class QuizResultsComponent implements OnInit {
     }
   }
 
-  onClick(): void {
-    console.log('clicked');
+  onRepeatClick(): void {
+    this.router.navigate([AppRoutes.Quiz]);
+  }
+  
+  onBackClick(): void {
+    this.router.navigate([AppRoutes.Dashboard]);
   }
 }

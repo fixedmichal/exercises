@@ -13,9 +13,11 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+import { HiraganaPageComponent } from './modules/dashboard/components/hiragana-page/hiragana-page.component';
+import { KanasListComponent } from './modules/dashboard/components/kanas-list/kanas-list.component';
 
 @NgModule({
-  declarations: [AppComponent, HeaderComponent, DashboardComponent],
+  declarations: [AppComponent, HeaderComponent, DashboardComponent, HiraganaPageComponent, KanasListComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
